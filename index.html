@@ -818,7 +818,7 @@ var smCharts = {}, cmpChart = null;
 var storeViewMode = 'fleet';
 
 var MKT_COLORS = {Atlanta:'#185FA5',Nashville:'#3B6D11',Dallas:'#854F0B',Houston:'#A32D2D',Louisville:'#6D28D9',Austin:'#0ea5e9','San Antonio':'#14b8a6'};
-var DASHBOARD_MARKETS = ['Nashville', 'Dallas', 'Atlanta', 'Louisville', 'Houston', 'Austin', 'San Antonio'];
+var DASHBOARD_MARKETS = ['Austin', 'San Antonio'];
 var MARKET_LAUNCH_MONTH = {Nashville:'2026-01',Dallas:'2026-02',Atlanta:'2026-02',Houston:'2026-03',Louisville:'2026-04',Austin:'2026-02','San Antonio':'2026-02'};
 
 function marketWasLive(market, monthKey) { var launch = MARKET_LAUNCH_MONTH[market]; if (!launch) return true; return monthKey >= launch; }
