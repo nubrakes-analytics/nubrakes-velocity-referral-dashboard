@@ -1,1 +1,2286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NuBrakes x Velocity Referral Program Dashboard</title>
+<style>
+:root{
+  --bg-app:#f8fafc;
+  --bg-card:#ffffff;
+  --bg-card-soft:#f8fafc;
+  --bg-dark:#111827;
+  --bg-dark-alt:#0E2468;
+  --bg-muted:#f1f5f9;
+  --bg-positive:#ecfdf5;
+  --bg-negative:#fff1f2;
+  --bg-warning:#fff7ed;
 
+  --text-strong:#111827;
+  --text-main:#374151;
+  --text-muted:#6b7280;
+  --text-soft:#9ca3af;
+  --text-white:#ffffff;
+
+  --border:#e5e7eb;
+  --border-soft:#f1f5f9;
+  --border-success:#6ee7b7;
+  --border-warning:#fed7aa;
+
+  --brand-indigo:#6366f1;
+  --brand-blue:#0ea5e9;
+  --brand-green:#10b981;
+  --brand-amber:#f59e0b;
+  --brand-purple:#8b5cf6;
+  --brand-teal:#14b8a6;
+  --brand-red:#f43f5e;
+  --brand-orange:#f97316;
+
+  --good:#10b981;
+  --bad:#f43f5e;
+  --warning:#f59e0b;
+
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:0 1px 4px rgba(0,0,0,0.06);
+  --shadow-lg:0 10px 40px rgba(0,0,0,0.18);
+
+  --radius-xs:6px;
+  --radius-sm:8px;
+  --radius-md:10px;
+  --radius-lg:12px;
+  --radius-xl:16px;
+  --radius-2xl:18px;
+  --radius-pill:999px;
+
+  --font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font-family);
+  background:var(--bg-app);
+  color:var(--text-main);
+}
+
+.app{
+  min-height:100vh;
+  padding:20px 16px 32px;
+  background:var(--bg-app);
+}
+.app__container{
+  max-width:1240px;
+  margin:0 auto;
+}
+
+/* header */
+.page-header{margin-bottom:20px}
+.page-title{
+  margin:0;
+  font-size:20px;
+  font-weight:700;
+  color:var(--text-strong);
+}
+.page-subtitle{
+  margin:3px 0 0;
+  font-size:12px;
+  color:var(--text-muted);
+}
+.status-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+  flex-wrap:wrap;
+}
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:3px 10px;
+  border-radius:var(--radius-pill);
+  border:1px solid var(--border-success);
+  background:var(--bg-positive);
+}
+.status-pill--warning{
+  background:var(--bg-warning);
+  border-color:var(--border-warning);
+}
+.status-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--good);
+}
+.status-pill--warning .status-dot{background:var(--brand-orange)}
+.status-text{
+  font-size:11px;
+  font-weight:600;
+  color:#065f46;
+}
+.status-pill--warning .status-text{color:#c2410c}
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:3px 8px;
+  border-radius:var(--radius-pill);
+  font-size:10px;
+  background:var(--bg-card-soft);
+  border:1px solid var(--border);
+  color:#334155;
+}
+
+/* tabs */
+.tabs{
+  display:flex;
+  overflow-x:auto;
+  margin-bottom:22px;
+  border-bottom:1.5px solid var(--border);
+}
+.tabs__btn{
+  padding:8px 20px;
+  border:none;
+  background:none;
+  color:var(--text-soft);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1.5px;
+}
+.tabs__btn.is-active{
+  color:var(--text-strong);
+  border-bottom-color:var(--text-strong);
+}
+
+/* generic */
+.pg{display:none}
+.pg.on{display:block}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 0 14px;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.month-wrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.month-wrap label,
+.fl{
+  font-size:12px;
+  color:var(--text-muted);
+  font-weight:600;
+}
+.dr-label{
+  font-size:12px;
+  color:var(--text-main);
+  background:var(--bg-card);
+  padding:6px 12px;
+  border-radius:var(--radius-pill);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-sm);
+}
+.mtd-pill{
+  font-size:11px;
+  background:var(--bg-warning);
+  color:#c2410c;
+  border-radius:var(--radius-pill);
+  padding:4px 10px;
+  font-weight:700;
+  border:1px solid var(--border-warning);
+}
+.complete-pill{
+  font-size:11px;
+  background:var(--bg-positive);
+  color:#065f46;
+  border-radius:var(--radius-pill);
+  padding:4px 10px;
+  font-weight:700;
+  border:1px solid var(--border-success);
+}
+select{
+  font-size:13px;
+  padding:9px 12px;
+  border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);
+  background:var(--bg-card);
+  color:var(--text-main);
+  font-weight:600;
+  cursor:pointer;
+  min-width:150px;
+}
+
+.frow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+
+/* scorecards */
+.mrow{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.mc{
+  border-radius:var(--radius-lg);
+  padding:16px 18px 14px;
+  background:var(--bg-card);
+  border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-md);
+}
+.ml{
+  font-size:10px;
+  font-weight:600;
+  color:var(--text-soft);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  margin-bottom:5px;
+}
+.mv{
+  font-size:26px;
+  line-height:1;
+  font-weight:700;
+  color:var(--text-strong);
+  margin-bottom:8px;
+}
+.ms{font-size:11px;color:var(--text-muted)}
+
+.slbl{
+  font-size:10px;
+  font-weight:700;
+  color:var(--text-soft);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:10px;
+}
+
+/* leaderboard cards */
+.mgrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.mcard{
+  border-radius:var(--radius-lg);
+  padding:16px;
+  position:relative;
+  border:1px solid var(--border);
+  background:var(--bg-card);
+  box-shadow:var(--shadow-md);
+}
+.mcard.rank-1-card{background:#fffbeb;border-color:#fcd34d}
+.mcard.rank-2-card{background:#f8fafc;border-color:#cbd5e1}
+.mcard.rank-3-card{background:#fff7ed;border-color:#fdba74}
+.mcard.rank-4-card{background:var(--bg-card);border-color:var(--border)}
+.rank-crown{
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:16px;
+  background:var(--bg-card);
+  border-radius:var(--radius-pill);
+  padding:1px 8px;
+  border:1px solid #fcd34d;
+}
+.rank-num{
+  position:absolute;
+  top:10px;
+  right:12px;
+  font-size:11px;
+  font-weight:700;
+  border-radius:var(--radius-pill);
+  padding:2px 8px;
+}
+.rn-1{background:#f59e0b;color:#fff}
+.rn-2{background:#cbd5e1;color:#334155}
+.rn-3{background:#fb923c;color:#7c2d12}
+.rn-4{background:var(--bg-muted);color:var(--text-muted)}
+.mcard-mkt{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text-strong);
+  margin-bottom:2px;
+}
+.mcard-mgr{
+  font-size:11px;
+  color:var(--text-muted);
+  margin-bottom:10px;
+}
+.mcard-nums{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:8px;
+}
+.mcard-actual{
+  font-size:24px;
+  font-weight:700;
+  color:var(--text-strong);
+}
+.mcard-tgt{font-size:12px;color:var(--text-muted)}
+.pbb{
+  height:6px;
+  background:var(--bg-muted);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:6px;
+}
+.pbf{height:100%;border-radius:4px}
+.fg{background:#1d9e75}
+.fa{background:#ba7517}
+.fr{background:#a32d2d}
+.mcard-status{
+  font-size:11px;
+  font-weight:700;
+  border-radius:var(--radius-pill);
+  padding:3px 10px;
+  display:inline-block;
+  margin-top:4px;
+}
+.st-win{background:var(--bg-positive);color:#065f46}
+.st-warn{background:var(--bg-warning);color:#c2410c}
+.st-danger{background:var(--bg-negative);color:#9f1239}
+
+/* panels */
+.panel{
+  background:var(--bg-card);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  margin-bottom:20px;
+  box-shadow:var(--shadow-md);
+}
+.ph{
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  background:var(--bg-card);
+}
+.pt{font-size:13px;font-weight:700;color:var(--text-strong)}
+
+.toggle-group{
+  display:flex;
+  gap:4px;
+  background:var(--bg-muted);
+  border-radius:var(--radius-sm);
+  padding:3px;
+}
+.tgbtn{
+  font-size:12px;
+  padding:5px 14px;
+  border-radius:6px;
+  border:none;
+  cursor:pointer;
+  color:var(--text-soft);
+  background:transparent;
+  font-weight:700;
+}
+.tgbtn.on{
+  background:var(--bg-card);
+  color:var(--text-strong);
+  box-shadow:var(--shadow-sm);
+}
+
+/* table */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  table-layout:fixed;
+}
+th{
+  font-size:11px;
+  font-weight:700;
+  color:var(--text-muted);
+  text-align:left;
+  padding:10px 16px;
+  border-bottom:1px solid var(--border);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+th.tr{text-align:right}
+td{
+  padding:10px 16px;
+  border-bottom:1px solid var(--border-soft);
+  color:var(--text-main);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+td.tr{text-align:right}
+tr:last-child td{border-bottom:none}
+tr.win-row td{background:rgba(16,185,129,0.08)}
+tr.warn-row td{background:rgba(245,158,11,0.10)}
+tr.danger-row td{background:rgba(244,63,94,0.08)}
+tr.dr:hover td{filter:brightness(.985)}
+
+/* badges */
+.b{
+  display:inline-block;
+  font-size:11px;
+  font-weight:700;
+  padding:4px 10px;
+  border-radius:var(--radius-pill);
+}
+.bg{background:var(--bg-positive);color:#065f46}
+.ba{background:var(--bg-warning);color:#c2410c}
+.br{background:var(--bg-negative);color:#9f1239}
+.bt{background:var(--bg-muted);color:var(--text-main)}
+
+/* panel foot / legend */
+.foot{
+  font-size:11px;
+  color:var(--text-muted);
+  padding:10px 16px;
+  border-top:1px solid var(--border-soft);
+  background:var(--bg-card);
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  padding:12px 16px;
+}
+.leg-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:var(--text-main);
+}
+.leg-dot{
+  width:10px;
+  height:10px;
+  border-radius:3px;
+}
+.leg-dash{
+  width:18px;
+  height:0;
+  border-top:2px dashed var(--text-soft);
+}
+
+.sm-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  padding:14px;
+}
+.sm-card{
+  background:var(--bg-card-soft);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:12px;
+}
+.chart-view{display:none}
+.chart-view.on{display:block}
+
+/* metric key */
+.metric-key{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  padding:10px 16px;
+  background:var(--bg-card-soft);
+  border-bottom:1px solid var(--border);
+}
+.mk-item{
+  display:flex;
+  align-items:flex-start;
+  gap:6px;
+}
+.mk-label{
+  font-size:11px;
+  font-weight:700;
+  color:var(--text-strong);
+  min-width:90px;
+}
+.mk-desc{
+  font-size:11px;
+  color:var(--text-muted);
+  line-height:1.4;
+}
+
+/* top quartile callout */
+.tq-callout{
+  background:#fffbeb;
+  border:1px solid #fcd34d;
+  border-radius:var(--radius-lg);
+  padding:16px 20px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow-sm);
+}
+.tq-title{
+  font-size:13px;
+  font-weight:700;
+  color:#92400e;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.tq-body{
+  font-size:12px;
+  color:#a16207;
+  margin-top:4px;
+  line-height:1.5;
+}
+.tq-stat{
+  font-size:22px;
+  font-weight:700;
+  color:#78350f;
+}
+.tq-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+.tq-item{
+  background:var(--bg-card);
+  border-radius:var(--radius-md);
+  padding:10px 14px;
+  border:1px solid #fde68a;
+}
+.tq-item-name{font-size:12px;font-weight:700;color:var(--text-strong)}
+.tq-item-mkt{font-size:11px;color:var(--text-muted)}
+.tq-item-pct{font-size:18px;font-weight:700;color:#92400e}
+.tq-item-detail{font-size:11px;color:#a16207}
+
+/* loading */
+.loading-overlay{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(248,250,252,0.88);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  gap:12px;
+  backdrop-filter:blur(3px);
+}
+.loading-spinner{
+  width:36px;
+  height:36px;
+  border:3px solid var(--border);
+  border-top-color:var(--bg-dark-alt);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{
+  font-size:13px;
+  color:var(--text-main);
+  font-weight:600;
+}
+
+/* helpers */
+.cg{color:#047857 !important}
+.ca{color:#c2410c !important}
+.cr{color:#be123c !important}
+
+@media (max-width:1100px){
+  .mrow,.mgrid,.tq-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){
+  .mrow,.mgrid,.sm-grid,.tq-grid{grid-template-columns:1fr}
+  .topbar,.frow{align-items:flex-start}
+  select{width:100%;min-width:100%}
+  .tabs{margin-bottom:18px}
+}
+
+/* collapsible sections */
+.section-hdr{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  user-select:none;
+  padding:6px 0;
+}
+.section-hdr:hover .slbl{color:var(--text-strong)}
+.section-toggle{
+  font-size:13px;
+  color:var(--text-soft);
+  transition:transform .2s;
+  margin-left:8px;
+  flex-shrink:0;
+}
+.section-toggle.open{transform:rotate(0deg)}
+.section-toggle.closed{transform:rotate(-90deg)}
+.section-body{overflow:hidden;transition:max-height .25s ease}
+.section-body.collapsed{max-height:0 !important}
+
+/* my store highlight */
+tr.my-store-row td{
+  background:rgba(59,130,246,0.10) !important;
+  border-top:1.5px solid #3b82f6;
+  border-bottom:1.5px solid #3b82f6;
+}
+.my-store-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:#1d4ed8;
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:20px;
+  margin-left:6px;
+  vertical-align:middle;
+}
+.gap-to-next{
+  font-size:11px;
+  color:#1d4ed8;
+  font-weight:600;
+  margin-left:4px;
+}
+
+/* view mode toggle */
+.view-mode-wrap{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.mode-toggle{
+  display:flex;
+  background:var(--bg-muted);
+  border-radius:var(--radius-pill);
+  padding:3px;
+  gap:2px;
+  flex-shrink:0;
+}
+.mode-btn{
+  padding:5px 16px;
+  border-radius:var(--radius-pill);
+  border:none;
+  background:transparent;
+  font-size:12px;
+  font-weight:600;
+  color:var(--text-muted);
+  cursor:pointer;
+  transition:all .15s;
+  white-space:nowrap;
+}
+.mode-btn.active{
+  background:var(--bg-card);
+  color:var(--text-strong);
+  box-shadow:0 1px 3px rgba(0,0,0,0.10);
+}
+.mode-btn.active.my-store-active{
+  background:#eff6ff;
+  color:#1d4ed8;
+}
+.mode-filters{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  flex:1;
+}
+.mode-hint{
+  font-size:11px;
+  color:var(--text-soft);
+  margin-top:4px;
+}
+</style>
+</head>
+<body>
+
+<div id="loading-overlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">Fetching live data…</div>
+</div>
+
+<div class="app">
+  <div class="app__container">
+
+    <header class="page-header">
+      <h1 class="page-title">NuBrakes x Velocity Referral Program Dashboard</h1>
+      <p class="page-subtitle" id="markets-sub">Loading…</p>
+
+      <div class="status-row">
+        <span class="status-pill" id="status-pill">
+          <span class="status-dot" id="udot"></span>
+          <span class="status-text" id="ds-pill">—</span>
+        </span>
+        <span class="chip" id="ulbl">Loading…</span>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tabs__btn is-active" onclick="sw('st', this)">Store drill-down</button>
+      <button class="tabs__btn" onclick="sw('am', this)">Area manager view</button>
+      <button class="tabs__btn" onclick="sw('ov', this)">Market overview</button>
+    </div>
+
+    <!-- STORE DRILL-DOWN -->
+    <div class="pg on" id="pg-st">
+      <div class="topbar">
+        <div class="month-wrap">
+          <label>Viewing month</label>
+          <select id="st-month-dd" onchange="selectMonth(this.value)"></select>
+          <span id="st-pill"></span>
+        </div>
+        <div class="dr-label" id="st-dr"></div>
+      </div>
+
+      <div class="view-mode-wrap">
+        <div>
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="mode-fleet-btn" onclick="setStoreMode('fleet')">Fleet view</button>
+            <button class="mode-btn" id="mode-mystore-btn" onclick="setStoreMode('mystore')">My store</button>
+          </div>
+        </div>
+        <div class="mode-filters" id="fleet-filters">
+          <span class="fl">Market</span>
+          <select id="mkt-sel" onchange="filterMkt(this.value)">
+            <option value="all">All markets</option>
+          </select>
+          <span class="fl">Area manager</span>
+          <select id="am-sel" onchange="renderS()">
+            <option value="all">All areas</option>
+          </select>
+          <div class="mode-hint" style="width:100%;margin-top:2px">Filters narrow which stores appear in the table and leaderboard.</div>
+        </div>
+        <div class="mode-filters" id="mystore-filters" style="display:none">
+          <span class="fl">Store number</span>
+          <select id="my-store-sel" onchange="renderS()">
+            <option value="">— select your store —</option>
+          </select>
+          <div class="mode-hint" style="width:100%;margin-top:2px">Shows your snapshot. Full ranked table still visible below.</div>
+        </div>
+      </div>
+
+      <div class="section-hdr" id="sh-st-scores" data-body="sb-st-scores">
+        <span class="slbl">Leaderboard &amp; summary</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-st-scores">
+        <div class="mrow" id="st-scorecards"></div>
+        <div id="tq-callout-wrap"></div>
+      </div>
+
+      <div class="section-hdr" id="sh-st-tbl" data-body="sb-st-tbl">
+        <span class="slbl">Store attainment</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-st-tbl">
+        <div class="panel">
+          <div class="ph">
+            <span class="pt">Store attainment — sorted by % to target</span>
+            <span style="font-size:11px;color:#888780" id="st-tbl-sub"></span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:11%">Store #</th>
+                <th style="width:12%">Manager</th>
+                <th style="width:13%">Area mgr</th>
+                <th style="width:11%">Market</th>
+                <th class="tr" style="width:9%">Target</th>
+                <th class="tr" style="width:9%">Actual</th>
+                <th class="tr" style="width:12%" id="st-pct-col-hdr">% to target</th>
+                <th class="tr" style="width:15%" id="st-pace-col-hdr">vs pace (MTD)</th>
+                <th class="tr" style="width:8%">Top 25%</th>
+              </tr>
+            </thead>
+            <tbody id="stbl"></tbody>
+          </table>
+          <div class="foot" id="st-foot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AREA MANAGER VIEW -->
+    <div class="pg" id="pg-am">
+      <div class="topbar">
+        <div class="month-wrap">
+          <label>Viewing month</label>
+          <select id="am-month-dd" onchange="selectMonth(this.value)"></select>
+          <span id="am-pill"></span>
+        </div>
+        <div class="dr-label" id="am-dr"></div>
+      </div>
+
+      <div class="frow">
+        <span class="fl">Market</span>
+        <select id="am-mkt-sel" onchange="selMarketKey=this.value; var s=document.getElementById('mkt-sel'); if(s&&s.value!==this.value)s.value=this.value; filterMkt(this.value);">
+          <option value="all">All markets</option>
+        </select>
+      </div>
+
+      <div class="section-hdr" id="sh-am-scores" data-body="sb-am-scores">
+        <span class="slbl">Performance summary</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-am-scores">
+        <div class="mrow" id="am-scorecards"></div>
+      </div>
+
+      <div class="section-hdr" id="sh-am-ldr" data-body="sb-am-ldr">
+        <span class="slbl">Area manager leaderboard — ranked by % to paced target</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-am-ldr">
+        <div class="mgrid" id="am-mcards"></div>
+      </div>
+
+      <div class="section-hdr" id="sh-am-tbl" data-body="sb-am-tbl">
+        <span class="slbl">Area manager detail</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-am-tbl">
+        <div class="panel">
+          <div class="ph"><span class="pt">Area manager attainment — lowest to highest</span></div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20%">Area manager</th>
+                <th style="width:14%">Market</th>
+                <th style="width:14%">Mkt manager</th>
+                <th class="tr" style="width:9%">Stores</th>
+                <th class="tr" style="width:11%">Target</th>
+                <th class="tr" style="width:11%">Actual</th>
+                <th class="tr" style="width:14%" id="am-pace-col-hdr">vs pace (MTD)</th>
+                <th class="tr" style="width:13%" id="am-attain-col-hdr">% to target</th>
+              </tr>
+            </thead>
+            <tbody id="amtbl"></tbody>
+          </table>
+          <div class="foot" id="am-foot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKET OVERVIEW -->
+    <div class="pg" id="pg-ov">
+      <div class="topbar">
+        <div class="month-wrap">
+          <label>Viewing month</label>
+          <select id="month-dd" onchange="selectMonth(this.value)"></select>
+          <span id="period-pill"></span>
+        </div>
+        <div class="dr-label" id="dr-lbl"></div>
+      </div>
+
+      <div class="section-hdr" id="sh-ov-scores" data-body="sb-ov-scores">
+        <span class="slbl">Month summary</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-ov-scores">
+        <div class="mrow" id="ov-scorecards"></div>
+      </div>
+
+      <div class="section-hdr" id="sh-ov-ldr" data-body="sb-ov-ldr">
+        <span class="slbl">Market leaderboard — ranked by % to paced target</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-ov-ldr">
+        <div class="mgrid" id="mcards"></div>
+      </div>
+
+      <div class="section-hdr" id="sh-ov-tbl" data-body="sb-ov-tbl">
+        <span class="slbl">Market summary</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-ov-tbl">
+        <div class="panel">
+          <div class="ph"><span class="pt" id="mkt-tbl-title"></span></div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:4%"></th>
+                <th style="width:13%">Market</th>
+                <th style="width:14%">Mkt manager</th>
+                <th class="tr" style="width:7%">Areas</th>
+                <th class="tr" style="width:7%">Stores</th>
+                <th class="tr" style="width:10%">Target</th>
+                <th class="tr" style="width:10%">Actual</th>
+                <th class="tr" style="width:9%">Avg/store</th>
+                <th class="tr" style="width:14%" id="mkt-pace-col-hdr">vs pace (MTD)</th>
+                <th class="tr" style="width:12%" id="mkt-attain-col-hdr">% to target</th>
+              </tr>
+            </thead>
+            <tbody id="mtbl"></tbody>
+          </table>
+          <div class="foot" id="mkt-foot"></div>
+          <div class="metric-key" id="metric-key"></div>
+        </div>
+      </div>
+
+      <div class="section-hdr" id="sh-ov-charts" data-body="sb-ov-charts">
+        <span class="slbl">Referral performance by market</span><span class="section-toggle open">▾</span>
+      </div>
+      <div class="section-body" id="sb-ov-charts">
+        <div class="panel">
+          <div class="ph">
+            <div>
+              <div class="pt">Referral actuals vs monthly targets</div>
+              <div style="font-size:11px;color:#888780;margin-top:2px">Targets derived from monthly target when available, otherwise scaled from daily target</div>
+            </div>
+            <div class="toggle-group">
+              <button class="tgbtn on" onclick="setCV('sm')">Market trends</button>
+              <button class="tgbtn" onclick="setCV('cmp')">Monthly comparison</button>
+            </div>
+          </div>
+
+          <div class="chart-view on" id="cv-sm">
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Actual (complete)</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#378ADD;opacity:.35"></div>Actual (MTD)</div>
+              <div class="leg-item"><div class="leg-dash"></div>Monthly target</div>
+            </div>
+            <div style="padding:8px 16px 0;display:flex;align-items:center;gap:6px">
+              <span id="sm-pace-note-label" style="font-size:12px;color:#6b7280"></span>
+              <span id="pace-info-btn" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1px solid #9ca3af;font-size:10px;color:#6b7280;cursor:pointer;flex-shrink:0;position:relative" title="">&#x24D8;
+                <span id="pace-tooltip" style="display:none;position:absolute;left:22px;top:-4px;background:#1f2937;color:#f9fafb;font-size:11px;line-height:1.5;padding:8px 10px;border-radius:6px;width:260px;z-index:100;white-space:normal;pointer-events:none"></span>
+              </span>
+            </div>
+            <div class="sm-grid" id="sm-grid"></div>
+            <div class="foot">Badge % = actual vs paced target for MTD months. On complete months it shows actual vs full target.</div>
+          </div>
+
+          <div class="chart-view" id="cv-cmp">
+            <div style="display:flex;align-items:center;gap:8px;padding:12px 16px 0">
+              <label style="font-size:12px;color:#888780">Compare month</label>
+              <select id="cmp-sel" onchange="buildCmp()"></select>
+            </div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Actual</div>
+              <div class="leg-item"><div class="leg-dash"></div>Monthly target</div>
+            </div>
+            <div style="padding:12px 16px 8px">
+              <div style="position:relative;width:100%;height:280px">
+                <canvas id="cmpChart"></canvas>
+              </div>
+            </div>
+            <div class="foot" id="cmp-foot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* =========================
+   DATA CONFIG
+========================= */
+var LIVE_URL = 'https://raw.githubusercontent.com/nubrakes-analytics/NuBrakes-Copilot/main/data/fact_nubrakes_velocity_referral_daily.json';
+var BIZ_LIVE_URL = 'https://raw.githubusercontent.com/nubrakes-analytics/NuBrakes-Copilot/main/data/fact_nubrakes_channel_market_kpi_daily.json';
+
+var FALLBACK_DATA = [
+];
+
+/* =========================
+   STATE
+========================= */
+var RAW = [];
+var BIZ_RAW = [];
+var MKTS = [];
+var MONTHS_META = [];
+var CURRENT_MONTH_KEY = '';
+var selMonthKey = '';
+var selMarketKey = 'all';
+var DATA_AGE_DAYS = 0;
+var dataSource = 'fallback';
+var bizDataSource = 'fallback';
+var MKT_COLORS = {
+  Atlanta:'#185FA5',
+  Nashville:'#3B6D11',
+  Dallas:'#854F0B',
+  Houston:'#A32D2D',
+  Louisville:'#6D28D9'
+};
+var smCharts = {}, cmpChart = null;
+
+var DASHBOARD_MARKETS = ['Nashville', 'Dallas', 'Atlanta', 'Louisville', 'Houston'];
+
+var MARKET_LAUNCH_MONTH = {
+  Nashville:  '2026-01',
+  Dallas:     '2026-02',
+  Atlanta:    '2026-02',
+  Houston:    '2026-03',
+  Louisville: '2026-04'
+};
+
+function marketWasLive(market, monthKey) {
+  var launch = MARKET_LAUNCH_MONTH[market];
+  if (!launch) return true;
+  return monthKey >= launch;
+}
+
+/* =========================
+   MARKET HELPERS
+========================= */
+function getAllowedDashboardMarkets() { return DASHBOARD_MARKETS.slice(); }
+function isAllowedDashboardMarket(market) { return DASHBOARD_MARKETS.indexOf(market) >= 0; }
+function getAvailableDashboardMarkets() {
+  return DASHBOARD_MARKETS.filter(function(m){
+    return RAW.some(function(r){ return r.market === m; }) ||
+           BIZ_RAW.some(function(r){ return r.market === m; });
+  });
+}
+function getOverviewMarkets() { return getAvailableDashboardMarkets(); }
+
+/* =========================
+   NORMALIZE
+========================= */
+function normaliseRow(r) {
+  var sn = Number(r['Store Number']);
+  if (!Number.isFinite(sn)) return null;
+
+  var mkt = r['Market'];
+  if (!mkt || mkt === '#N/A' || !isAllowedDashboardMarket(mkt)) return null;
+
+  var leads = typeof r['Leads'] === 'number' ? r['Leads'] : Number(r['Leads'] || 0);
+  var comp = typeof r['Completed Jobs'] === 'number' ? r['Completed Jobs'] : Number(r['Completed Jobs'] || 0);
+  var rt = typeof r['Referral Target'] === 'number' ? r['Referral Target'] : Number(r['Referral Target'] || 0);
+  var ct = typeof r['Completed Target'] === 'number' ? r['Completed Target'] : Number(r['Completed Target'] || 0);
+  var mrt =
+    typeof r['Monthly Referral Target'] === 'number' ? r['Monthly Referral Target'] :
+    typeof r['MonthlyReferralTarget'] === 'number' ? r['MonthlyReferralTarget'] :
+    (r['Monthly Referral Target'] != null ? Number(r['Monthly Referral Target']) : null);
+
+  var dayStr = String(r['Day'] || '').substring(0,10);
+  if (!dayStr) return null;
+
+  return {
+    day: dayStr,
+    monthKey: dayStr.substring(0,7),
+    storeNum: sn,
+    leads: Number.isFinite(leads) ? leads : 0,
+    completedJobs: Number.isFinite(comp) ? comp : 0,
+    market: mkt,
+    regional: r['Regional'] || '',
+    area: r['Area'] || '',
+    storeManager: r['Store Manager'] || '',
+    dailyRefTarget: Number.isFinite(rt) ? rt : 0,
+    dailyCompTarget: Number.isFinite(ct) ? ct : 0,
+    monthlyRefTarget: Number.isFinite(mrt) ? mrt : null
+  };
+}
+
+function normaliseFallbackRow(r) {
+  if (!r.Market || !isAllowedDashboardMarket(r.Market)) return null;
+  var dayStr = String(r.Day || '').substring(0,10);
+  return {
+    day: dayStr,
+    monthKey: dayStr.substring(0,7),
+    storeNum: Number(r.StoreNumber),
+    leads: Number(r.Leads || 0),
+    completedJobs: Number(r.CompletedJobs || 0),
+    market: r.Market || '',
+    regional: r.Regional || '',
+    area: r.Area || '',
+    storeManager: r.StoreManager || '',
+    dailyRefTarget: Number(r.ReferralTarget || 0),
+    dailyCompTarget: Number(r.CompletedTarget || 0),
+    monthlyRefTarget:
+      typeof r.MonthlyReferralTarget === 'number' ? r.MonthlyReferralTarget :
+      typeof r['Monthly Referral Target'] === 'number' ? r['Monthly Referral Target'] :
+      null
+  };
+}
+
+function pickNum(v) {
+  var n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function pickFirst(obj, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    if (obj[k] != null && obj[k] !== '') return obj[k];
+  }
+  return null;
+}
+
+function normaliseBizRow(r) {
+  var dayRaw = pickFirst(r, ['Day','day','date']);
+  var dayStr = String(dayRaw || '').substring(0,10);
+  if (!dayStr) return null;
+
+  var market = pickFirst(r, ['market','Market']);
+  if (!market || market === '#N/A' || !isAllowedDashboardMarket(market)) return null;
+
+  var channel = String(
+    pickFirst(r, [
+      'Channel Category',
+      'channel_category',
+      'channelCategory',
+      'cat',
+      'channel',
+      'Channel'
+    ]) || ''
+  ).trim();
+
+  return {
+    day: dayStr,
+    monthKey: dayStr.substring(0,7),
+    market: market,
+    channel: channel,
+    leads: pickNum(pickFirst(r, ['leads','Leads'])),
+    booked: pickNum(pickFirst(r, ['jobs_booked','Jobs Booked','booked'])),
+    completed: pickNum(pickFirst(r, ['jobs_completed','Completed Jobs','completed'])),
+    revenue: pickNum(pickFirst(r, ['revenue','Revenue','invoiced_customer_price']))
+  };
+}
+
+function isReferralChannel(channel) {
+  var c = String(channel || '').toLowerCase();
+  return c.indexOf('referral') >= 0;
+}
+
+/* =========================
+   DERIVED META
+========================= */
+function buildDerived() {
+  var monthSet = {};
+  RAW.forEach(function(r){ monthSet[r.monthKey] = true; });
+
+  var bizMonthSet = {};
+  BIZ_RAW.forEach(function(r){
+    if (isReferralChannel(r.channel)) bizMonthSet[r.monthKey] = true;
+  });
+
+  var monthOrder = Object.keys(monthSet).concat(
+    Object.keys(bizMonthSet).filter(function(k){ return !monthSet[k]; })
+  ).sort();
+
+  var latestWithData = '';
+  monthOrder.forEach(function(mk){
+    var hasLeads = RAW.some(function(r){ return r.monthKey === mk && r.leads > 0; }) ||
+                   BIZ_RAW.some(function(r){ return r.monthKey === mk && isReferralChannel(r.channel) && r.leads > 0; });
+    if (hasLeads) latestWithData = mk;
+  });
+  CURRENT_MONTH_KEY = latestWithData || monthOrder[monthOrder.length - 1] || '';
+
+  MONTHS_META = monthOrder.map(function(mk){
+    var parts = mk.split('-');
+    var y = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    var daysInMonth = new Date(y, m, 0).getDate();
+    var isMTD = mk === CURRENT_MONTH_KEY;
+    var daysElapsed = daysInMonth;
+
+    if (isMTD) {
+      var days = RAW.filter(function(r){ return r.monthKey === mk; }).map(function(r){ return r.day; });
+      var bizDays = BIZ_RAW.filter(function(r){ return r.monthKey === mk && isReferralChannel(r.channel); }).map(function(r){ return r.day; });
+      var combinedDays = days.concat(bizDays).sort();
+      if (combinedDays.length) {
+        daysElapsed = parseInt(combinedDays[combinedDays.length - 1].split('-')[2], 10);
+      }
+    }
+
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return {
+      key: mk,
+      label: months[m-1] + ' ' + y,
+      isMTD: isMTD,
+      isFuture: false,
+      daysElapsed: daysElapsed,
+      daysTotal: daysInMonth
+    };
+  });
+
+  MKTS = getAvailableDashboardMarkets();
+  if (!selMonthKey) selMonthKey = CURRENT_MONTH_KEY;
+}
+
+/* =========================
+   HELPERS
+========================= */
+function getMeta(monthKey) {
+  return MONTHS_META.find(function(m){ return m.key === monthKey; }) || null;
+}
+function pc(a, t) { return t > 0 ? Math.round(a / t * 100) : 0; }
+function paceFraction(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta) return 1;
+  if (!meta.isMTD) return 1;
+  return meta.daysElapsed / meta.daysTotal;
+}
+function paceStatus(a, t, pace) {
+  if (t <= 0) return {cls:'',label:'no target set',badge:'bt',row:'',sc:'neutral'};
+  var pacedTarget = t * pace;
+  if (pacedTarget <= 0) return {cls:'',label:'no target set',badge:'bt',row:'',sc:'neutral'};
+  var r = a / pacedTarget;
+  if (r >= 1)   return {cls:'cg',label:'on or ahead of pace',badge:'bg',row:'win-row',sc:'win'};
+  if (r >= 0.8) return {cls:'ca',label:'within 20% of pace',badge:'ba',row:'warn-row',sc:'warn'};
+  return {cls:'cr',label:'behind pace',badge:'br',row:'danger-row',sc:'danger'};
+}
+function vsPaceStr(a, t, pace) {
+  if (!hasValidTarget(t)) return '—';
+  var v = Math.round(a - t * pace);
+  if (v === 0) return 'on pace';
+  return v > 0 ? '+' + v + ' referrals ahead' : v + ' referrals behind';
+}
+function attainOrPaceCell(a, t, pace, isMTD) {
+  if (!isMTD) {
+    if (t <= 0) return '—';
+    return Math.round(a / t * 100) + '%';
+  }
+  return vsPaceStr(a, t, pace);
+}
+function displayPctBadge(pct, hasTarget) {
+  if (!hasTarget) return '—';
+  if (pct >= 150) return '&gt;150%';
+  return pct + '%';
+}
+function paceNoteText(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta) return '';
+  if (!meta.isMTD) return '';
+  var pct = Math.round(meta.daysElapsed / meta.daysTotal * 100);
+  return 'Pacing note: targets shown are pro-rated to today — day ' + meta.daysElapsed + ' of ' + meta.daysTotal +
+    ' (' + pct + '% of month). "vs pace" = actual minus expected at this point in the month. ' +
+    '✅ ≥100% on pace  ⚠️ 80–99% at risk  🔴 <80% behind.';
+}
+
+function updateDynamicHeaders(monthKey) {
+  var meta = getMeta(monthKey);
+  var isMTD = meta && meta.isMTD;
+  var paceHdr = isMTD ? 'vs pace (MTD)' : '% attained';
+  var goalHdr = isMTD ? '% to paced target' : '% attained';
+
+  var stPct = document.getElementById('st-pct-col-hdr');
+  if (stPct) stPct.textContent = isMTD ? '% to target' : 'final % to target';
+
+  var stPace = document.getElementById('st-pace-col-hdr');
+  if (stPace) stPace.textContent = isMTD ? 'vs pace (MTD)' : '';
+
+  var amPace = document.getElementById('am-pace-col-hdr');
+  if (amPace) amPace.textContent = paceHdr;
+  var amAttain = document.getElementById('am-attain-col-hdr');
+  if (amAttain) amAttain.textContent = goalHdr;
+
+  var mktPace = document.getElementById('mkt-pace-col-hdr');
+  if (mktPace) mktPace.textContent = paceHdr;
+  var mktAttain = document.getElementById('mkt-attain-col-hdr');
+  if (mktAttain) mktAttain.textContent = goalHdr;
+
+  var note = paceNoteText(monthKey);
+  var smLabel = document.getElementById('sm-pace-note-label');
+  var smTooltip = document.getElementById('pace-tooltip');
+  var paceBtn = document.getElementById('pace-info-btn');
+  if (smLabel) {
+    if (note) {
+      var meta2 = getMeta(monthKey);
+      smLabel.textContent = meta2 && meta2.isMTD
+        ? 'Paced target: ' + Math.round(meta2.daysElapsed / meta2.daysTotal * 100) + '% of month elapsed'
+        : 'Complete month';
+    } else {
+      smLabel.textContent = '';
+    }
+  }
+  if (smTooltip) smTooltip.textContent = note;
+  if (paceBtn && smTooltip) {
+    paceBtn.style.display = note ? 'inline-flex' : 'none';
+    paceBtn.onmouseenter = function(){ smTooltip.style.display = 'block'; };
+    paceBtn.onmouseleave = function(){ smTooltip.style.display = 'none'; };
+  }
+}
+
+function makeScorecard(l, v, s, t) {
+  var toneCls = t === 'win' ? 'bg' : t === 'danger' ? 'br' : t === 'warn' ? 'ba' : 'bt';
+  return '' +
+    '<div class="mc">' +
+      '<div class="ml">' + l + '</div>' +
+      '<div class="mv">' + v + '</div>' +
+      '<div class="ms"><span class="b ' + toneCls + '">' + s + '</span></div>' +
+    '</div>';
+}
+
+function pillHTML(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta) return '';
+  var staleWarn = (meta.isMTD && DATA_AGE_DAYS > 2)
+    ? ' <span class="status-pill status-pill--warning" style="display:inline-flex;margin-left:4px"><span class="status-dot"></span><span class="status-text">Data ' + DATA_AGE_DAYS + ' days stale</span></span>'
+    : '';
+  if (meta.isMTD) return '<span class="mtd-pill">MTD — ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' days</span>' + staleWarn;
+  return '<span class="complete-pill">Complete month</span>';
+}
+
+function dateRangeLabel(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta) return '';
+  var parts = monthKey.split('-');
+  var y = parts[0];
+  var m = parseInt(parts[1], 10);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mn = months[m - 1];
+  if (meta.isMTD) return mn + ' 1 – ' + mn + ' ' + meta.daysElapsed + ', ' + y + ' (month-to-date)';
+  return mn + ' 1 – ' + mn + ' ' + meta.daysTotal + ', ' + y + ' (complete)';
+}
+
+function marketManagerLabel(market) {
+  var seen = {};
+  RAW.forEach(function(r){ if (r.market === market && r.regional) seen[r.regional] = true; });
+  return Object.keys(seen).join(' / ') || '—';
+}
+
+function monthMarketTotals(monthKey, market) {
+  var rows = RAW.filter(function(r){ return r.monthKey === monthKey && r.market === market; });
+  var leads = 0, comp = 0;
+  var storeSet = {};
+  rows.forEach(function(r){ leads += r.leads; comp += r.completedJobs; storeSet[r.storeNum] = true; });
+  return { leads: leads, comp: comp, storeCount: Object.keys(storeSet).length };
+}
+
+function bizMonthMarketTotals(monthKey, market) {
+  var rows = BIZ_RAW.filter(function(r){
+    return r.monthKey === monthKey && r.market === market && isReferralChannel(r.channel);
+  });
+  return rows.reduce(function(acc, r){
+    acc.leads += r.leads;
+    acc.booked += r.booked;
+    acc.completed += r.completed;
+    acc.revenue += r.revenue;
+    return acc;
+  }, {leads:0, booked:0, completed:0, revenue:0});
+}
+
+function marketOverviewActuals(monthKey, market) {
+  var bizTotals = bizMonthMarketTotals(monthKey, market);
+  if (BIZ_RAW && BIZ_RAW.length) return bizTotals.leads || 0;
+  return monthMarketTotals(monthKey, market).leads;
+}
+
+function monthlyTargetForStoreMonth(storeNum, monthKey) {
+  var storeMarket = null;
+  for (var i = 0; i < RAW.length; i++) {
+    if (RAW[i].storeNum == storeNum) { storeMarket = RAW[i].market; break; }
+  }
+  if (storeMarket && !marketWasLive(storeMarket, monthKey)) return -1;
+
+  var rows = RAW.filter(function(r){ return r.storeNum == storeNum && r.monthKey === monthKey; });
+  if (!rows.length) return 0;
+
+  var monthlyRows = rows.filter(function(r){
+    return typeof r.monthlyRefTarget === 'number' && !isNaN(r.monthlyRefTarget) && r.monthlyRefTarget > 0;
+  });
+  if (monthlyRows.length > 0) {
+    var sum = 0;
+    monthlyRows.forEach(function(r){ sum += r.monthlyRefTarget; });
+    return sum / monthlyRows.length;
+  }
+
+  var meta = getMeta(monthKey);
+  var seenDay = {};
+  var sumDaily = 0;
+  var hasDaily = false;
+  rows.forEach(function(r){
+    if (!seenDay[r.day]) {
+      seenDay[r.day] = true;
+      if (r.dailyRefTarget > 0) hasDaily = true;
+      sumDaily += (r.dailyRefTarget || 0);
+    }
+  });
+  if (!hasDaily) return 0;
+
+  if (meta && meta.isMTD && meta.daysElapsed > 0) {
+    return sumDaily * meta.daysTotal / meta.daysElapsed;
+  }
+  return sumDaily;
+}
+
+function isPreLaunch(t) { return t === -1; }
+function hasValidTarget(t) { return t > 0; }
+
+function monthlyTarget(monthKey, market) {
+  var storeMap = {};
+  RAW.filter(function(r){ return r.monthKey === monthKey && r.market === market; }).forEach(function(r){
+    if (!storeMap[r.storeNum]) storeMap[r.storeNum] = true;
+  });
+  var total = Object.keys(storeMap).reduce(function(sum, storeNum){
+    var t = monthlyTargetForStoreMonth(storeNum, monthKey);
+    return sum + (hasValidTarget(t) ? t : 0);
+  }, 0);
+  return Math.round(total);
+}
+
+function uniqueStores(monthKey, market) {
+  var seen = {};
+  RAW.filter(function(r){ return r.monthKey === monthKey && r.market === market; }).forEach(function(r){ seen[r.storeNum] = true; });
+  return Object.keys(seen).length;
+}
+function areasForMarket(market) {
+  var seen = {};
+  RAW.forEach(function(r){ if (r.market === market && r.area) seen[r.area] = true; });
+  return Object.keys(seen).sort();
+}
+function uniqueAreasCount(monthKey, market) {
+  var seen = {};
+  RAW.filter(function(r){ return r.monthKey === monthKey && r.market === market && r.area; }).forEach(function(r){ seen[r.area] = true; });
+  return Object.keys(seen).length;
+}
+function safeColor(m) { return MKT_COLORS[m] || '#185FA5'; }
+
+/* =========================
+   DROPDOWNS / INIT
+========================= */
+function buildAllDDs() {
+  ['month-dd','am-month-dd','st-month-dd'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = MONTHS_META.map(function(m){
+      var lbl = m.label + (m.isMTD ? ' — MTD' : '');
+      return '<option value="'+m.key+'"'+(m.key===selMonthKey?' selected':'')+'>'+lbl+'</option>';
+    }).join('');
+  });
+
+  var cmpSel = document.getElementById('cmp-sel');
+  if (cmpSel) {
+    cmpSel.innerHTML = MONTHS_META.map(function(m){
+      var lbl = m.label + (m.isMTD ? ' — MTD' : '');
+      return '<option value="'+m.key+'"'+(m.key===selMonthKey?' selected':'')+'>'+lbl+'</option>';
+    }).join('');
+  }
+
+  var myStoreSel = document.getElementById('my-store-sel');
+  if (myStoreSel) {
+    var currentMyStore = myStoreSel.value;
+    var allStoreNums = [];
+    RAW.forEach(function(r){ if (allStoreNums.indexOf(r.storeNum) < 0) allStoreNums.push(r.storeNum); });
+    allStoreNums.sort(function(a,b){ return a - b; });
+    myStoreSel.innerHTML = '<option value="">— select —</option>' +
+      allStoreNums.map(function(n){ return '<option value="'+n+'"'+(String(n)===currentMyStore?' selected':'')+'>Store '+n+'</option>'; }).join('');
+  }
+
+  ['am-mkt-sel','mkt-sel'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    var cur = el.value || 'all';
+    el.innerHTML = '<option value="all">All markets</option>' + MKTS.map(function(m){ return '<option value="'+m+'">'+m+'</option>'; }).join('');
+    el.value = MKTS.indexOf(cur) >= 0 ? cur : 'all';
+  });
+}
+
+function selectMonth(key) {
+  selMonthKey = key;
+  buildAllDDs();
+  updateDynamicHeaders(key);
+
+  var dl = dateRangeLabel(key);
+  var ph = pillHTML(key);
+
+  ['dr-lbl','am-dr','st-dr'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = dl; });
+  ['period-pill','am-pill','st-pill'].forEach(function(id){ var e = document.getElementById(id); if (e) e.innerHTML = ph; });
+
+  buildOv();
+  renderAM(document.getElementById('am-mkt-sel').value || 'all');
+  refreshCollapsible('sb-am-scores');
+  refreshCollapsible('sb-am-ldr');
+  refreshCollapsible('sb-am-tbl');
+  renderS();
+}
+
+/* =========================
+   STORE DRILLDOWN
+========================= */
+function filterMkt(mkt) {
+  selMarketKey = mkt;
+  var amMktSel = document.getElementById('am-mkt-sel');
+  if (amMktSel && amMktSel.value !== mkt) amMktSel.value = mkt;
+
+  var sel = document.getElementById('am-sel');
+  sel.innerHTML = '<option value="all">All areas</option>';
+
+  var baseMarkets = getAvailableDashboardMarkets();
+  var areas = mkt === 'all'
+    ? Array.from(new Set(RAW.filter(function(r){ return baseMarkets.indexOf(r.market) >= 0; }).map(function(r){ return r.area; }).filter(Boolean))).sort()
+    : areasForMarket(mkt);
+
+  areas.forEach(function(a){
+    var o = document.createElement('option');
+    o.value = a;
+    o.textContent = a;
+    sel.appendChild(o);
+  });
+
+  renderS();
+}
+
+function renderS() {
+  var mk = selMonthKey;
+  var pace = paceFraction(mk);
+  var isMTD = (getMeta(mk) || {}).isMTD;
+  var mktF = document.getElementById('mkt-sel').value;
+  var amF = document.getElementById('am-sel').value;
+
+  var storeMap = {};
+  RAW.forEach(function(r){
+    if (!isAllowedDashboardMarket(r.market)) return;
+    if (storeViewMode === 'fleet') {
+      if (mktF !== 'all' && r.market !== mktF) return;
+      if (amF !== 'all' && r.area !== amF) return;
+    }
+
+    if (!storeMap[r.storeNum]) {
+      storeMap[r.storeNum] = { n:r.storeNum, mgr:r.storeManager || '—', area:r.area || '—', mkt:r.market, a:0, t:0 };
+    }
+    if (r.monthKey === mk) storeMap[r.storeNum].a += r.leads;
+  });
+
+  Object.keys(storeMap).forEach(function(sn){ storeMap[sn].t = monthlyTargetForStoreMonth(sn, mk); });
+
+  var data = Object.values(storeMap).map(function(s){
+    var effectiveTgt = isMTD && s.t > 0 ? (s.t * pace) : s.t;
+    var pctToTarget = effectiveTgt > 0 ? Math.round(s.a / effectiveTgt * 100) : 0;
+    return { n:s.n, mgr:s.mgr, area:s.area, mkt:s.mkt, a:s.a, t:s.t, effectiveTgt:effectiveTgt, pctToTarget:pctToTarget, ps:paceStatus(s.a, s.t, pace) };
+  });
+
+  var withTarget = data.filter(function(s){ return hasValidTarget(s.t); });
+  var sortedByPct = withTarget.slice().sort(function(a,b){ return b.pctToTarget - a.pctToTarget; });
+  var tqCount = Math.max(1, Math.ceil(sortedByPct.length * 0.25));
+  var topQ = sortedByPct.slice(0, tqCount);
+  var bottomQ = sortedByPct.slice(Math.max(0, sortedByPct.length - tqCount));
+  var topQSet = new Set(topQ.map(function(s){ return s.n; }));
+  var topQAvg = topQ.length ? Math.round(topQ.reduce(function(s,x){ return s + x.pctToTarget; }, 0) / topQ.length) : 0;
+  var bottomQAvg = bottomQ.length ? Math.round(bottomQ.reduce(function(s,x){ return s + x.pctToTarget; }, 0) / bottomQ.length) : 0;
+
+  var on = data.filter(function(s){ return s.ps.cls === 'cg'; }).length;
+  var at = data.filter(function(s){ return s.ps.cls === 'ca'; }).length;
+  var bh = data.filter(function(s){ return s.ps.cls === 'cr'; }).length;
+  var avg = withTarget.length ? Math.round(withTarget.reduce(function(s,x){ return s + x.pctToTarget; }, 0) / withTarget.length) + '%' : '—';
+
+  var myStoreSelEl2 = document.getElementById('my-store-sel');
+  var myStoreNum2 = (storeViewMode === 'mystore' && myStoreSelEl2 && myStoreSelEl2.value) ? Number(myStoreSelEl2.value) : 0;
+  var myStoreData = myStoreNum2 ? data.find(function(s){ return s.n === myStoreNum2; }) : null;
+
+  var scorecardsEl = document.getElementById('st-scorecards');
+  if (scorecardsEl) {
+    if (myStoreData) {
+      scorecardsEl.innerHTML = '';
+      scorecardsEl.style.display = 'none';
+    } else {
+      scorecardsEl.style.display = '';
+      scorecardsEl.innerHTML =
+        makeScorecard('On track', on, '≥ 100% of paced target', 'win') +
+        makeScorecard('At risk', at, '80–99% of paced target', 'warn') +
+        makeScorecard('Behind', bh, '< 80% of paced target', 'danger') +
+        makeScorecard('Avg % to target', avg, 'stores with targets', 'neutral');
+    }
+  }
+
+  var tqWrap = document.getElementById('tq-callout-wrap');
+  if (tqWrap) {
+    if (storeViewMode === 'mystore' && !myStoreData) {
+      tqWrap.innerHTML = '<div style="padding:20px;text-align:center;color:#9ca3af;font-size:13px">Select your store number above to see your snapshot.</div>';
+    } else if (myStoreData) {
+      var ms = myStoreData;
+      var hasT = hasValidTarget(ms.t);
+      var myRank = sortedByPct.findIndex(function(s){ return s.n === myStoreNum2; });
+      var rankLabel = myRank >= 0 ? (myRank + 1) + ' of ' + sortedByPct.length : '—';
+      var storeAbove = myRank > 0 ? sortedByPct[myRank - 1] : null;
+      var storeBelowS = myRank >= 0 && myRank < sortedByPct.length - 1 ? sortedByPct[myRank + 1] : null;
+      var gapAbove = storeAbove && hasT ? storeAbove.a - ms.a : null;
+      var gapBelow = storeBelowS && hasT ? ms.a - storeBelowS.a : null;
+      var pacedTgt = hasT ? (isMTD ? Math.round(ms.t * pace) : ms.t) : null;
+      var paceBarW = pacedTgt > 0 ? Math.min(Math.round(ms.a / pacedTgt * 100), 100) : 0;
+      var paceBarColor = ms.ps.cls === 'cg' ? '#1d9e75' : ms.ps.cls === 'ca' ? '#ba7517' : '#a32d2d';
+
+      tqWrap.innerHTML =
+        '<div style="background:#eff6ff;border:1.5px solid #3b82f6;border-radius:10px;padding:16px 20px;margin-bottom:16px">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">' +
+            '<div style="font-size:14px;font-weight:700;color:#1e40af">Store '+ms.n+' — '+ms.mgr+'</div>' +
+            '<div style="font-size:12px;color:#3b82f6;font-weight:600">Ranked '+rankLabel+' this period</div>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-bottom:14px">' +
+            '<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe">' +
+              '<div style="font-size:11px;color:#6b7280;margin-bottom:3px">Referrals</div>' +
+              '<div style="font-size:22px;font-weight:700;color:#1e3a8a">'+ms.a+'</div>' +
+            '</div>' +
+            (hasT ? '<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe"><div style="font-size:11px;color:#6b7280;margin-bottom:3px">'+(isMTD?'Paced target':'Target')+'</div><div style="font-size:22px;font-weight:700;color:#1e3a8a">'+pacedTgt+'</div></div>' : '') +
+            (hasT ? '<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe"><div style="font-size:11px;color:#6b7280;margin-bottom:3px">% to target</div><div style="font-size:22px;font-weight:700;color:'+(ms.pctToTarget>=100?'#065f46':ms.pctToTarget>=80?'#92400e':'#9f1239')+'">'+displayPctBadge(ms.pctToTarget,true)+'</div></div>' : '') +
+          '</div>' +
+          (hasT ? '<div style="margin-bottom:10px"><div style="height:8px;background:#dbeafe;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+paceBarW+'%;background:'+paceBarColor+';border-radius:4px;transition:width .3s"></div></div></div>' : '') +
+          '<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px">' +
+            (gapAbove !== null && gapAbove > 0 ? '<span style="color:#1d4ed8"><strong>'+gapAbove+'</strong> referrals to pass #'+(myRank)+'</span>' : '') +
+            (gapAbove !== null && gapAbove <= 0 ? '<span style="color:#059669">Ahead of #'+(myRank)+(gapAbove < 0 ? ' by '+Math.abs(gapAbove) : ' (tied)')+'</span>' : '') +
+            (gapBelow !== null ? '<span style="color:#9ca3af">#'+(myRank+2)+' is '+gapBelow+' behind you</span>' : '') +
+            (isMTD ? '<span style="color:#6b7280">'+vsPaceStr(ms.a, ms.t, pace)+'</span>' : '') +
+          '</div>' +
+        '</div>';
+    } else if (!sortedByPct.length) {
+      tqWrap.innerHTML = '';
+    } else {
+      function stOrdinal(n){ var s=["th","st","nd","rd"]; var v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+      var topQLeads = topQ.reduce(function(s,x){ return s + x.a; }, 0);
+      var bottomQLeads = bottomQ.reduce(function(s,x){ return s + x.a; }, 0);
+      var totalLeads = withTarget.reduce(function(s,x){ return s + x.a; }, 0);
+      var topQShare = totalLeads > 0 ? Math.round(topQLeads / totalLeads * 100) : 0;
+      var mktSelEl = document.getElementById('mkt-sel');
+      var amSelEl = document.getElementById('am-sel');
+      var filterLabel = (mktSelEl && mktSelEl.value !== 'all') ? mktSelEl.value : (amSelEl && amSelEl.value !== 'all') ? amSelEl.value : '';
+
+      var insightBar = (withTarget.length >= 4)
+        ? '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 0 14px">' +
+            '<span style="font-size:12px;color:#6b7280">Top 25%</span>' +
+            '<span style="font-size:12px;color:#6b7280">('+topQ.length+' store'+(topQ.length!==1?'s':'')+'):</span>' +
+            '<span style="font-weight:700;font-size:13px;color:#065f46">'+topQLeads+' referrals</span>' +
+            '<span style="font-size:12px;color:#9ca3af;padding:0 4px">·</span>' +
+            '<span style="font-size:12px;color:#6b7280">Bottom 25%</span>' +
+            '<span style="font-size:12px;color:#6b7280">('+bottomQ.length+' store'+(bottomQ.length!==1?'s':'')+'):</span>' +
+            '<span style="font-weight:700;font-size:13px;color:#9f1239">'+bottomQLeads+' referrals</span>' +
+            (topQShare > 0 ? '<span style="font-size:11px;color:#9ca3af;margin-left:6px">— top 25% producing '+topQShare+'% of all referrals'+(filterLabel ? ' in '+filterLabel : '')+' this period</span>' : '') +
+          '</div>'
+        : '';
+
+      var top3 = sortedByPct.slice(0, 3);
+      var cardsHTML = '<div class="slbl" style="margin-bottom:8px">Top stores this period</div><div class="mgrid">' +
+        top3.map(function(s, i){
+          var ps = paceStatus(s.a, s.t, pace);
+          var fc = ps.cls==='cg'?'fg':ps.cls==='ca'?'fa':'fr';
+          var stCls = ps.cls==='cg'?'st-win':ps.cls==='ca'?'st-warn':'st-danger';
+          var actualW = Math.min(s.pctToTarget, 100);
+          var paceW = Math.min(Math.round(pace*100), 100);
+          var cardCls = i===0?'rank-1-card':i===1?'rank-2-card':'rank-3-card';
+          var numCls  = i===0?'rn-1':i===1?'rn-2':'rn-3';
+          return '<div class="mcard '+cardCls+'" style="margin-top:'+(i===0?'14px':'0')+'">' +
+            (i===0?'<div class="rank-crown">&#127942;</div>':'') +
+            '<div class="rank-num '+numCls+'">'+stOrdinal(i+1)+'</div>' +
+            '<div class="mcard-mkt">Store '+s.n+'</div>' +
+            '<div class="mcard-mgr">'+s.mgr+' &middot; '+s.area+'</div>' +
+            '<div class="mcard-nums"><span class="mcard-actual">'+s.a+'</span><span class="mcard-tgt">of '+parseFloat(s.t.toFixed(1))+' target</span></div>' +
+            '<div style="position:relative;margin-bottom:8px"><div class="pbb"><div class="pbf '+fc+'" style="width:'+actualW+'%"></div></div>' +
+            (isMTD?'<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:'+paceW+'%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>':'') +
+            '</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="mcard-status '+stCls+'">'+vsPaceStr(s.a, s.t, pace)+'</span><span style="font-size:12px;color:#888780">'+s.pctToTarget+'% to '+(isMTD?'paced ':'')+'target</span></div></div>';
+        }).join('') + '</div>';
+
+      tqWrap.innerHTML = insightBar + cardsHTML;
+    }
+    refreshCollapsible('sb-st-scores');
+  }
+
+  var scoresHdr = document.querySelector('#sh-st-scores .slbl');
+  if (scoresHdr) {
+    if (storeViewMode === 'mystore' && myStoreData) scoresHdr.textContent = 'My store — Store ' + myStoreNum2;
+    else if (storeViewMode === 'mystore') scoresHdr.textContent = 'My store';
+    else scoresHdr.textContent = 'Leaderboard & summary';
+  }
+
+  var sub = document.getElementById('st-tbl-sub');
+  var paceHdr = document.getElementById('st-pace-col-hdr');
+  if (paceHdr) paceHdr.style.display = isMTD ? '' : 'none';
+  if (sub) sub.textContent = isMTD
+    ? '% to paced target (' + Math.round(pace * 100) + '% of month elapsed) with separate vs pace column'
+    : 'Completed month — showing final % to target only';
+
+  var noTarget = data.filter(function(s){ return !hasValidTarget(s.t); });
+  var allSorted = sortedByPct.concat(noTarget);
+
+  document.getElementById('stbl').innerHTML = (function(){
+    var myStoreSelEl = document.getElementById('my-store-sel');
+    var myStoreNum = (storeViewMode === 'mystore' && myStoreSelEl && myStoreSelEl.value) ? Number(myStoreSelEl.value) : 0;
+    return allSorted.map(function(s, idx){
+      var isTopQ = topQSet.has(s.n);
+      var isMyStore = myStoreNum && s.n === myStoreNum;
+      var rowCls = (isMyStore ? 'my-store-row' : s.ps.row) + ' dr';
+      var hasT = hasValidTarget(s.t);
+      var preLaunch = isPreLaunch(s.t);
+      var tgtCell = preLaunch ? '<td class="tr" style="color:#9ca3af;font-size:11px">pre-launch</td>' : '<td class="tr">'+(hasT ? parseFloat(s.t.toFixed(1)) : '—')+'</td>';
+      var pctBadge = hasT ? '<span class="b '+(s.pctToTarget >= 100 ? 'bg' : s.pctToTarget >= 80 ? 'ba' : 'br')+'">'+displayPctBadge(s.pctToTarget, true)+'</span>' : '—';
+      var pctCell = '<td class="tr">'+pctBadge+'</td>';
+      var paceCell = isMTD ? '<td class="tr '+s.ps.cls+'" style="font-size:12px">'+vsPaceStr(s.a, s.t, pace)+'</td>' : '<td class="tr" style="display:none"></td>';
+
+      var storeNumCell;
+      if (isMyStore) {
+        var storeAbove = idx > 0 ? allSorted[idx - 1] : null;
+        var gapStr = '';
+        if (storeAbove && hasValidTarget(storeAbove.t) && hasT) {
+          var gapToAbove = storeAbove.a - s.a;
+          if (gapToAbove > 0) gapStr = '<span class="gap-to-next">'+gapToAbove+' behind #'+idx+'</span>';
+          else if (gapToAbove < 0) gapStr = '<span class="gap-to-next" style="color:#059669">'+Math.abs(gapToAbove)+' ahead</span>';
+          else gapStr = '<span class="gap-to-next">tied</span>';
+        }
+        storeNumCell = '<td style="font-weight:700">'+s.n+'<span class="my-store-badge">You</span>'+gapStr+'</td>';
+      } else {
+        storeNumCell = '<td style="font-weight:500">'+s.n+'</td>';
+      }
+
+      return '<tr class="'+rowCls+'">' +
+        storeNumCell +
+        '<td style="font-size:12px">'+s.mgr+'</td>' +
+        '<td style="font-size:12px;color:#5F5E5A">'+s.area+'</td>' +
+        '<td style="font-size:12px;color:#888780">'+s.mkt+'</td>' +
+        tgtCell +
+        '<td class="tr">'+s.a+'</td>' +
+        pctCell +
+        paceCell +
+        '<td class="tr">'+(isTopQ ? '<span class="b bg" style="padding:2px 6px">&#127942;</span>' : '')+'</td>' +
+      '</tr>';
+    }).join('');
+  })();
+
+  refreshCollapsible('sb-st-scores');
+  refreshCollapsible('sb-st-tbl');
+
+  var stHeadRow = document.querySelector('#pg-st thead tr');
+  if (stHeadRow) {
+    var ths = stHeadRow.querySelectorAll('th');
+    if (ths[7]) ths[7].style.display = isMTD ? '' : 'none';
+  }
+
+  var stBody = document.getElementById('stbl');
+  if (stBody) {
+    var rows = stBody.querySelectorAll('tr');
+    rows.forEach(function(row){ var cells = row.querySelectorAll('td'); if (cells[7]) cells[7].style.display = isMTD ? '' : 'none'; });
+  }
+
+  var stFoot = document.getElementById('st-foot');
+  if (stFoot) {
+    stFoot.textContent = isMTD
+      ? 'Sorted highest to lowest % to paced target. Separate vs pace column shown for MTD months. Gold rows = top 25%.'
+      : 'Sorted highest to lowest final % to target. Only one attainment column is shown for completed months. Gold rows = top 25%.';
+  }
+}
+
+/* =========================
+   AREA MANAGER VIEW
+========================= */
+function renderAM(filterMarket) {
+  var mk = selMonthKey;
+  var pace = paceFraction(mk);
+  var isMTD = (getMeta(mk) || {}).isMTD;
+
+  var areas = {};
+  RAW.forEach(function(r){
+    if (!isAllowedDashboardMarket(r.market)) return;
+    if (!r.area) return;
+    if (filterMarket !== 'all' && r.market !== filterMarket) return;
+    var k = r.market + '||' + r.area;
+    if (!areas[k]) areas[k] = { area:r.area, market:r.market, regional:marketManagerLabel(r.market), storeNums:{}, a:0, t:0 };
+    areas[k].storeNums[r.storeNum] = true;
+    if (r.monthKey === mk) areas[k].a += r.leads;
+  });
+
+  Object.keys(areas).forEach(function(k){
+    var storeNums = Object.keys(areas[k].storeNums);
+    areas[k].t = storeNums.reduce(function(sum, sn){
+      var t = monthlyTargetForStoreMonth(sn, mk);
+      return sum + (hasValidTarget(t) ? t : 0);
+    }, 0);
+  });
+
+  var data = Object.values(areas).map(function(r){
+    var effectiveTgt = isMTD && hasValidTarget(r.t) ? (r.t * pace) : (hasValidTarget(r.t) ? r.t : 0);
+    var pctToTarget = effectiveTgt > 0 ? Math.round(r.a / effectiveTgt * 100) : 0;
+    return { name:r.area, market:r.market, regional:r.regional, cnt:Object.keys(r.storeNums).length, a:r.a, t:r.t, effectiveTgt:effectiveTgt, pctToTarget:pctToTarget, ps:paceStatus(r.a, r.t, pace) };
+  }).sort(function(a,b){
+    var pa = a.effectiveTgt > 0 ? a.a / a.effectiveTgt : -1;
+    var pb = b.effectiveTgt > 0 ? b.a / b.effectiveTgt : -1;
+    return pa - pb;
+  });
+
+  var on = data.filter(function(x){ return x.ps.cls === 'cg'; }).length;
+  var at = data.filter(function(x){ return x.ps.cls === 'ca'; }).length;
+  var bh = data.filter(function(x){ return x.ps.cls === 'cr'; }).length;
+  var wa = data.filter(function(x){ return x.t > 0; });
+  var avg = wa.length ? Math.round(wa.reduce(function(s,x){ return s + x.pctToTarget; }, 0) / wa.length) + '%' : '—';
+
+  document.getElementById('am-scorecards').innerHTML =
+    makeScorecard('On track', on, '≥100% of paced target', 'win') +
+    makeScorecard('At risk', at, '80–99% of paced target', 'warn') +
+    makeScorecard('Behind', bh, '<80% of paced target', 'danger') +
+    makeScorecard('Avg % to target', avg, isMTD ? 'vs paced target' : 'vs full-month target', 'neutral');
+
+  var af = document.getElementById('am-foot');
+  if (af) {
+    af.textContent = isMTD
+      ? '% to target uses paced target (' + Math.round(pace * 100) + '% of month elapsed) — consistent with store table. Daily pace = actual minus expected referrals at current pace.'
+      : 'Complete month — % to target is final attainment vs full monthly target.';
+  }
+
+  document.getElementById('amtbl').innerHTML = data.map(function(r){
+    var tgt = r.t;
+    var tgtCell = isPreLaunch(tgt) ? '<td class="tr" style="color:#9ca3af;font-size:11px">pre-launch</td>' : !hasValidTarget(tgt) ? '<td class="tr" style="color:#9ca3af">—</td>' : '<td class="tr">'+parseFloat(tgt.toFixed(1))+'</td>';
+    var hasT = hasValidTarget(tgt);
+    var paceCell = isMTD && hasT ? '<td class="tr '+r.ps.cls+'" style="font-size:12px">'+vsPaceStr(r.a, tgt, pace)+'</td>' : isMTD ? '<td class="tr" style="color:#9ca3af">—</td>' : '<td class="tr" style="color:#374151">'+attainOrPaceCell(r.a, tgt, pace, false)+'</td>';
+    var badge = hasT ? '<span class="b '+(r.pctToTarget >= 100 ? 'bg' : r.pctToTarget >= 80 ? 'ba' : 'br')+'">'+displayPctBadge(r.pctToTarget, true)+'</span>' : '—';
+    return '<tr class="dr '+r.ps.row+'">' +
+      '<td style="font-weight:500">'+r.name+'</td>' +
+      '<td style="font-size:12px;color:#888780">'+r.market+'</td>' +
+      '<td style="font-size:12px;color:#888780">'+r.regional+'</td>' +
+      '<td class="tr">'+r.cnt+'</td>' +
+      tgtCell +
+      '<td class="tr">'+r.a+'</td>' +
+      paceCell +
+      '<td class="tr">'+badge+'</td>' +
+    '</tr>';
+  }).join('');
+
+  var ldrData = data.filter(function(r){ return hasValidTarget(r.t); }).slice().sort(function(a,b){ return b.pctToTarget - a.pctToTarget; }).slice(0, 3);
+  var amCards = document.getElementById('am-mcards');
+  if (amCards) {
+    if (!ldrData.length) {
+      amCards.innerHTML = '<div style="color:#9ca3af;font-size:13px;padding:12px">No targets set for this period.</div>';
+    } else {
+      amCards.innerHTML = ldrData.map(function(r, i){
+        var ps = paceStatus(r.a, r.t, pace);
+        var fc = ps.cls === 'cg' ? 'fg' : ps.cls === 'ca' ? 'fa' : 'fr';
+        var stCls = ps.cls === 'cg' ? 'st-win' : ps.cls === 'ca' ? 'st-warn' : 'st-danger';
+        var actualW = Math.min(r.pctToTarget, 100);
+        var paceW = Math.min(Math.round(pace * 100), 100);
+        function ordinal(n){ var s=["th","st","nd","rd"]; var v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+        var cardCls = i===0?'rank-1-card':i===1?'rank-2-card':i===2?'rank-3-card':'rank-4-card';
+        var numCls  = i===0?'rn-1':i===1?'rn-2':i===2?'rn-3':'rn-4';
+        return '<div class="mcard '+cardCls+'" style="margin-top:'+(i===0?'14px':'0')+'">' +
+          (i===0?'<div class="rank-crown">&#127942;</div>':'') +
+          '<div class="rank-num '+numCls+'">'+ordinal(i+1)+'</div>' +
+          '<div class="mcard-mkt">'+r.name+'</div>' +
+          '<div class="mcard-mgr">'+r.market+' &middot; '+r.cnt+' store'+(r.cnt!==1?'s':'')+'</div>' +
+          '<div class="mcard-nums"><span class="mcard-actual">'+r.a+'</span><span class="mcard-tgt">of '+parseFloat(r.t.toFixed(1))+' target</span></div>' +
+          '<div style="position:relative;margin-bottom:8px"><div class="pbb"><div class="pbf '+fc+'" style="width:'+actualW+'%"></div></div>' +
+          (isMTD?'<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:'+paceW+'%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>':'') +
+          '</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="mcard-status '+stCls+'">'+vsPaceStr(r.a, r.t, pace)+'</span><span style="font-size:12px;color:#888780">'+r.pctToTarget+'% to '+(isMTD?'paced ':'')+'target</span></div></div>';
+      }).join('');
+    }
+    refreshCollapsible('sb-am-ldr');
+  }
+}
+
+/* =========================
+   MARKET OVERVIEW
+========================= */
+function getMktRollup(monthKey) {
+  return getOverviewMarkets().map(function(m){
+    var actualLeads = marketOverviewActuals(monthKey, m);
+    return { m:m, cnt:uniqueStores(monthKey, m), areas:uniqueAreasCount(monthKey, m), a:actualLeads, t:monthlyTarget(monthKey, m), avgS:uniqueStores(monthKey, m) > 0 ? actualLeads / uniqueStores(monthKey, m) : 0 };
+  });
+}
+
+function buildOv() {
+  var mk = selMonthKey;
+  var meta = getMeta(mk);
+  var pace = paceFraction(mk);
+  var isMTD = meta && meta.isMTD;
+
+  document.getElementById('mkt-tbl-title').textContent = 'Market summary — ' + (meta ? meta.label : mk);
+  document.getElementById('mkt-foot').textContent = isMTD
+    ? '"Actual" uses referral leads from business outcomes raw data. "vs pace (MTD)" = actual minus paced target (monthly target × ' + meta.daysElapsed + '/' + meta.daysTotal + ' days elapsed). ≥100% on track, 80–99% at risk, <80% behind.'
+    : 'Complete month — actuals use business outcomes raw data, while targets and org reference remain from the referral target dataset.';
+
+  var mkEl = document.getElementById('metric-key');
+  if (isMTD) {
+    mkEl.innerHTML =
+      '<div class="mk-item"><span class="mk-label">Paced target</span><span class="mk-desc">Monthly target × (days elapsed ÷ days in month). Day ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' = ' + Math.round(pace*100) + '% of month.</span></div>' +
+      '<div class="mk-item"><span class="mk-label">vs pace (MTD)</span><span class="mk-desc">Actual minus paced target. Positive = ahead, negative = behind. Colors: green ≥100%, amber 80–99%, red &lt;80%.</span></div>' +
+      '<div class="mk-item"><span class="mk-label">Actual source</span><span class="mk-desc">Referral values come from KPI raw data only. Targets, manager labels, area counts, and store counts remain from the referral target dataset.</span></div>';
+    mkEl.style.display = 'flex';
+  } else {
+    mkEl.style.display = 'none';
+  }
+
+  var rows = getMktRollup(mk);
+  var ta = rows.reduce(function(s,r){ return s + r.a; }, 0);
+  var tt = rows.reduce(function(s,r){ return s + r.t; }, 0);
+  var oPS = paceStatus(ta, tt, pace);
+  var effectiveTT = isMTD && tt > 0 ? Math.round(tt * pace) : tt;
+  var ovPct = effectiveTT > 0 ? Math.round(ta / effectiveTT * 100) : 0;
+
+  document.getElementById('ov-scorecards').innerHTML =
+    makeScorecard('Total referrals', ta, 'referral leads', 'neutral') +
+    makeScorecard(isMTD ? 'Paced target' : 'Monthly target', isMTD ? effectiveTT : tt, isMTD ? 'day '+meta.daysElapsed+' of '+meta.daysTotal : meta ? meta.label : mk, 'neutral') +
+    makeScorecard('Overall attainment', (isMTD ? effectiveTT : tt) > 0 ? ovPct + '%' : '—', isMTD ? 'vs paced target' : 'final attainment', oPS.sc) +
+    makeScorecard(isMTD ? 'Days elapsed' : 'Month status', isMTD ? (meta.daysElapsed + ' / ' + meta.daysTotal) : 'Complete', isMTD ? Math.round(pace * 100) + '% of month done' : 'Full results', 'neutral');
+
+  var ranked = rows.slice().map(function(r){
+    var effectiveTgt = isMTD && r.t > 0 ? (r.t * pace) : r.t;
+    r.effectiveTgt = effectiveTgt;
+    r.pctToPace = effectiveTgt > 0 ? r.a / effectiveTgt : 0;
+    r.pctToTarget = effectiveTgt > 0 ? Math.round(r.a / effectiveTgt * 100) : 0;
+    return r;
+  }).sort(function(a,b){ return b.pctToPace - a.pctToPace; });
+
+  document.getElementById('mcards').innerHTML = ranked.map(function(r, i){
+    var ps = paceStatus(r.a, r.t, pace);
+    var actualW = r.t > 0 ? Math.min(Math.round(r.a / r.t * 100), 100) : 0;
+    var paceW = Math.min(Math.round(pace * 100), 100);
+    var fc = ps.cls === 'cg' ? 'fg' : ps.cls === 'ca' ? 'fa' : 'fr';
+    var stCls = ps.cls === 'cg' ? 'st-win' : ps.cls === 'ca' ? 'st-warn' : 'st-danger';
+    function ordinal(n){ var s=["th","st","nd","rd"]; var v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+    var cardCls = i === 0 ? 'rank-1-card' : i === 1 ? 'rank-2-card' : i === 2 ? 'rank-3-card' : 'rank-4-card';
+    var numCls = i === 0 ? 'rn-1' : i === 1 ? 'rn-2' : i === 2 ? 'rn-3' : 'rn-4';
+
+    return '<div class="mcard '+cardCls+'" style="margin-top:'+(i===0?'14px':'0')+'">' +
+      (i===0?'<div class="rank-crown">&#127942;</div>':'') +
+      '<div class="rank-num '+numCls+'">'+ordinal(i + 1)+'</div>' +
+      '<div class="mcard-mkt">'+r.m+'</div>' +
+      '<div class="mcard-mgr">'+marketManagerLabel(r.m)+'</div>' +
+      '<div class="mcard-nums"><span class="mcard-actual">'+r.a+'</span><span class="mcard-tgt">of '+r.t+' target</span></div>' +
+      '<div style="position:relative;margin-bottom:8px"><div class="pbb"><div class="pbf '+fc+'" style="width:'+actualW+'%"></div></div>' +
+      (isMTD ? '<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:'+paceW+'%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>' : '') +
+      '</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="mcard-status '+stCls+'">'+vsPaceStr(r.a, r.t, pace)+'</span><span style="font-size:12px;color:#888780">'+(r.t > 0 ? r.pctToTarget : 0)+'% to '+(isMTD ? 'paced target' : 'goal')+'</span></div></div>';
+  }).join('');
+
+  document.getElementById('mtbl').innerHTML = ranked.map(function(r, i){
+    var ps = paceStatus(r.a, r.t, pace);
+    var pv = r.t > 0 ? r.a - Math.round(r.t * pace) : null;
+    return '<tr class="dr '+ps.row+'">' +
+      '<td style="font-size:12px;color:#888780;font-weight:500">'+(i + 1)+'</td>' +
+      '<td style="font-weight:500">'+r.m+'</td>' +
+      '<td style="color:#888780;font-size:12px">'+marketManagerLabel(r.m)+'</td>' +
+      '<td class="tr">'+r.areas+'</td>' +
+      '<td class="tr">'+r.cnt+'</td>' +
+      '<td class="tr">'+r.t+'</td>' +
+      '<td class="tr">'+r.a+'</td>' +
+      '<td class="tr" style="font-weight:500">'+r.avgS.toFixed(1)+'</td>' +
+      '<td class="tr '+ps.cls+'" style="font-size:12px">'+(pv !== null ? vsPaceStr(r.a, r.t, pace) : '—')+'</td>' +
+      '<td class="tr"><span class="b '+ps.badge+'">'+displayPctBadge(r.pctToTarget, r.t > 0)+'</span></td>' +
+    '</tr>';
+  }).join('');
+
+  buildSM();
+  refreshCollapsible('sb-ov-scores');
+  refreshCollapsible('sb-ov-ldr');
+  refreshCollapsible('sb-ov-tbl');
+  setTimeout(function(){ refreshCollapsible('sb-ov-charts'); }, 100);
+}
+
+/* =========================
+   CHARTS
+========================= */
+function setCV(v) {
+  document.querySelectorAll('.tgbtn').forEach(function(b, i){
+    b.classList.toggle('on', (i === 0 && v === 'sm') || (i === 1 && v === 'cmp'));
+  });
+  document.getElementById('cv-sm').classList.toggle('on', v === 'sm');
+  document.getElementById('cv-cmp').classList.toggle('on', v === 'cmp');
+  if (v === 'sm') buildSM(); else buildCmp();
+}
+
+function buildSM() {
+  var mk = selMonthKey;
+  var meta = getMeta(mk);
+  var isMTD = meta && meta.isMTD;
+  var pace = paceFraction(mk);
+  var overviewMarkets = getOverviewMarkets();
+
+  var grid = document.getElementById('sm-grid');
+  grid.innerHTML = overviewMarkets.map(function(m){
+    return '<div class="sm-card">' +
+      '<div class="sm-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">' +
+        '<span style="font-size:12px;font-weight:700;color:'+safeColor(m)+'">'+m+'</span>' +
+        '<span id="sm-stat-'+m+'"></span>' +
+      '</div>' +
+      '<div style="position:relative;height:150px"><canvas id="sm-'+m+'"></canvas></div>' +
+    '</div>';
+  }).join('');
+
+  overviewMarkets.forEach(function(m){
+    var actualMonths = MONTHS_META.slice(-6);
+    var labels = actualMonths.map(function(mm){ return mm.label.substring(0,3); });
+    var actuals = actualMonths.map(function(mm){ return marketOverviewActuals(mm.key, m); });
+    var targets = actualMonths.map(function(mm){ return monthlyTarget(mm.key, m); });
+    var idx = actualMonths.findIndex(function(mm){ return mm.key === mk; });
+    var bp = (idx >= 0 && targets[idx] > 0)
+      ? (isMTD ? pc(marketOverviewActuals(mk, m), Math.round(monthlyTarget(mk, m) * pace)) : pc(marketOverviewActuals(mk, m), monthlyTarget(mk, m)))
+      : 0;
+
+    var bb = bp >= 100 ? '#1d9e75' : bp >= 80 ? '#ba7517' : '#a32d2d';
+    var statEl = document.getElementById('sm-stat-' + m);
+    if (statEl) statEl.innerHTML = '<span style="font-weight:700;border-radius:20px;padding:2px 8px;font-size:11px;background:'+bb+';color:#fff">'+bp+'%'+(isMTD?' of pace':'')+'</span>';
+
+    var bgs = actualMonths.map(function(mm){ return mm.isMTD ? safeColor(m) + '55' : safeColor(m); });
+    if (smCharts[m]) smCharts[m].destroy();
+
+    smCharts[m] = new Chart(document.getElementById('sm-' + m), {
+      type:'bar',
+      data:{
+        labels:labels,
+        datasets:[
+          {label:'Actual',data:actuals,backgroundColor:bgs,borderRadius:6,order:2},
+          {label:'Target',data:targets,type:'line',borderColor:safeColor(m),borderWidth:1.5,borderDash:[5,4],pointRadius:3,pointBackgroundColor:'#fff',pointBorderColor:safeColor(m),pointBorderWidth:2,fill:false,tension:0,order:1}
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            callbacks:{
+              label:function(ctx){ return ctx.dataset.label === 'Target' ? 'Target: ' + ctx.parsed.y : 'Actual: ' + ctx.parsed.y + (actualMonths[ctx.dataIndex].isMTD ? ' (MTD)' : ''); },
+              title:function(ctx){ return m + ' — ' + actualMonths[ctx[0].dataIndex].label; }
+            }
+          }
+        },
+        scales:{
+          x:{grid:{display:false},ticks:{font:{size:10},color:'#888780'}},
+          y:{grid:{color:'#F1EFE8'},ticks:{font:{size:10},color:'#888780'},suggestedMax:Math.max.apply(null,targets.concat(actuals).concat([1])) * 1.15}
+        }
+      }
+    });
+  });
+}
+
+function buildCmp() {
+  var mk = (document.getElementById('cmp-sel') || {}).value || selMonthKey;
+  var meta = getMeta(mk);
+  var overviewMarkets = getOverviewMarkets();
+  if (!meta) return;
+
+  var actuals = overviewMarkets.map(function(m){ return marketOverviewActuals(mk, m); });
+  var targets = overviewMarkets.map(function(m){ return monthlyTarget(mk, m); });
+
+  document.getElementById('cmp-foot').textContent = meta.isMTD
+    ? meta.label + ' MTD — ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' days.'
+    : 'Complete month — final actuals vs target.';
+
+  if (cmpChart) cmpChart.destroy();
+
+  cmpChart = new Chart(document.getElementById('cmpChart'), {
+    type:'bar',
+    data:{
+      labels:overviewMarkets,
+      datasets:[
+        { label:'Actual', data:actuals, backgroundColor:overviewMarkets.map(function(m){ return meta.isMTD ? safeColor(m) + '88' : safeColor(m); }), borderRadius:8, order:2 },
+        { label:'Target', data:targets, type:'line', borderColor:'#888780', borderWidth:1.5, borderDash:[5,4], pointRadius:0, fill:false, tension:0, order:1 }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(ctx){ return ctx.dataset.label === 'Target' ? 'Target: ' + ctx.parsed.y : (meta.isMTD ? 'MTD: ' : 'Actual: ') + actuals[ctx.dataIndex]; },
+            title:function(ctx){ return ctx[0].label + ' — ' + meta.label; }
+          }
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:12},color:'#5F5E5A'}},
+        y:{grid:{color:'#F1EFE8'},ticks:{font:{size:11},color:'#888780'},suggestedMax:Math.max.apply(null,targets.concat(actuals).concat([1])) * 1.2,title:{display:true,text:'Total referrals',font:{size:11},color:'#888780'}}
+      }
+    }
+  });
+}
+
+/* =========================
+   TAB SWITCH
+========================= */
+function sw(t) {
+  var keys = ['st','am','ov'];
+
+  document.querySelectorAll('.tabs__btn').forEach(function(el, i){
+    el.classList.toggle('is-active', keys[i] === t);
+  });
+
+  keys.forEach(function(k){
+    var pg = document.getElementById('pg-' + k);
+    if (pg) pg.classList.toggle('on', k === t);
+  });
+
+  if (t === 'am') {
+    var amSel = document.getElementById('am-mkt-sel');
+    if (amSel && amSel.value !== selMarketKey) amSel.value = selMarketKey;
+    renderAM(selMarketKey);
+  }
+  if (t === 'st') {
+    var stSel = document.getElementById('mkt-sel');
+    if (stSel && stSel.value !== selMarketKey) {
+      stSel.value = selMarketKey;
+      filterMkt(selMarketKey);
+    } else {
+      renderS();
+    }
+  }
+  if (t === 'ov') buildOv();
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+function applyLoadedState(source) {
+  buildDerived();
+  buildAllDDs();
+  updateDynamicHeaders(CURRENT_MONTH_KEY);
+  selectMonth(CURRENT_MONTH_KEY);
+
+  document.getElementById('markets-sub').textContent = MKTS.join(' · ');
+
+  var latestReferralDay = RAW.map(function(r){ return r.day; }).sort().pop() || '';
+  var latestBizDay = BIZ_RAW.filter(function(r){ return isReferralChannel(r.channel); }).map(function(r){ return r.day; }).sort().pop() || '';
+  var latestDay = [latestReferralDay, latestBizDay].filter(Boolean).sort().pop() || '';
+  document.getElementById('ulbl').textContent = latestDay ? 'Data through ' + latestDay : 'Data loaded';
+
+  var pill = document.getElementById('status-pill');
+  var text = document.getElementById('ds-pill');
+
+  if (source === 'live') {
+    text.textContent = 'Live data';
+    pill.className = 'status-pill';
+  } else {
+    text.textContent = 'Fallback data';
+    pill.className = 'status-pill status-pill--warning';
+  }
+
+  filterMkt('all');
+  document.getElementById('loading-overlay').style.display = 'none';
+
+  [
+    ['sh-st-scores','sb-st-scores',true],
+    ['sh-st-tbl','sb-st-tbl',true],
+    ['sh-am-scores','sb-am-scores',true],
+    ['sh-am-ldr','sb-am-ldr',true],
+    ['sh-am-tbl','sb-am-tbl',true],
+    ['sh-ov-scores','sb-ov-scores',true],
+    ['sh-ov-ldr','sb-ov-ldr',true],
+    ['sh-ov-tbl','sb-ov-tbl',true],
+    ['sh-ov-charts','sb-ov-charts',true]
+  ].forEach(function(cfg){ initCollapsible(cfg[0], cfg[1], cfg[2]); });
+}
+
+function loadData() {
+  document.getElementById('loading-text').textContent = 'Fetching live data…';
+
+  Promise.all([
+    fetch(LIVE_URL).then(function(res){
+      if (!res.ok) throw new Error('Referral dashboard HTTP ' + res.status);
+      return res.json();
+    }),
+    fetch(BIZ_LIVE_URL).then(function(res){
+      if (!res.ok) throw new Error('KPI actuals HTTP ' + res.status);
+      return res.json();
+    })
+  ])
+    .then(function(results){
+      var referralJson = results[0];
+      var bizJson = results[1];
+
+      document.getElementById('loading-text').textContent =
+        'Processing ' + referralJson.length + ' referral rows and ' + bizJson.length + ' KPI rows…';
+
+      var referralRows = referralJson.map(normaliseRow).filter(Boolean);
+      var bizRows = bizJson.map(normaliseBizRow).filter(Boolean);
+
+      if (!referralRows.length) throw new Error('No usable referral rows');
+
+      RAW = referralRows;
+      BIZ_RAW = bizRows;
+      dataSource = 'live';
+      bizDataSource = bizRows.length ? 'live' : 'fallback';
+
+      applyLoadedState('live');
+    })
+    .catch(function(err){
+      console.warn('Live data fetch failed, using fallback:', err.message);
+      document.getElementById('loading-text').textContent = 'Using fallback data…';
+
+      RAW = FALLBACK_DATA.map(normaliseFallbackRow).filter(Boolean);
+      BIZ_RAW = [];
+      dataSource = 'fallback';
+      bizDataSource = 'fallback';
+
+      applyLoadedState('fallback');
+    });
+}
+
+/* collapsible sections */
+function initCollapsible(headerId, bodyId, defaultOpen) {
+  var hdr = document.getElementById(headerId);
+  var body = document.getElementById(bodyId);
+  if (!hdr || !body) return;
+  var toggle = hdr.querySelector('.section-toggle');
+  var open = defaultOpen !== false;
+
+  if (open) {
+    body.style.maxHeight = 'none';
+    body.classList.remove('collapsed');
+  } else {
+    body.style.maxHeight = '0';
+    body.classList.add('collapsed');
+  }
+  if (toggle) toggle.className = 'section-toggle ' + (open ? 'open' : 'closed');
+
+  hdr.addEventListener('click', function(){
+    open = !open;
+    if (open) {
+      body.classList.remove('collapsed');
+      body.style.maxHeight = body.scrollHeight + 'px';
+      setTimeout(function(){ if (open) body.style.maxHeight = 'none'; }, 260);
+    } else {
+      body.style.maxHeight = body.scrollHeight + 'px';
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          body.style.maxHeight = '0';
+          body.classList.add('collapsed');
+        });
+      });
+    }
+    if (toggle) toggle.className = 'section-toggle ' + (open ? 'open' : 'closed');
+  });
+}
+
+function expandSection(bodyId) {
+  var body = document.getElementById(bodyId);
+  if (!body) return;
+  body.classList.remove('collapsed');
+  body.style.maxHeight = body.scrollHeight + 'px';
+  var hdr = document.querySelector('[data-body="'+bodyId+'"] .section-toggle');
+  if (hdr) hdr.className = 'section-toggle open';
+}
+
+function refreshCollapsible(bodyId) {
+  var body = document.getElementById(bodyId);
+  if (!body || body.classList.contains('collapsed')) return;
+  body.style.maxHeight = 'none';
+}
+
+/* Store tab view mode */
+var storeViewMode = 'fleet';
+
+function setStoreMode(mode) {
+  storeViewMode = mode;
+
+  var fleetBtn = document.getElementById('mode-fleet-btn');
+  var myBtn    = document.getElementById('mode-mystore-btn');
+  var fleetF   = document.getElementById('fleet-filters');
+  var myF      = document.getElementById('mystore-filters');
+
+  if (mode === 'fleet') {
+    fleetBtn.className = 'mode-btn active';
+    myBtn.className    = 'mode-btn';
+    fleetF.style.display = '';
+    myF.style.display    = 'none';
+    var mySel = document.getElementById('my-store-sel');
+    if (mySel) mySel.value = '';
+  } else {
+    fleetBtn.className = 'mode-btn';
+    myBtn.className    = 'mode-btn active my-store-active';
+    fleetF.style.display = 'none';
+    myF.style.display    = '';
+    var mktSel = document.getElementById('mkt-sel');
+    var amSel  = document.getElementById('am-sel');
+    if (mktSel) { mktSel.value = 'all'; selMarketKey = 'all'; }
+    if (amSel)  amSel.value = 'all';
+  }
+  renderS();
+}
+
+loadData();
+</script>
+</body>
+</html>
