@@ -786,23 +786,7 @@ tr.my-store-row td{
 var LIVE_URL = 'https://raw.githubusercontent.com/nubrakes-analytics/NuBrakes-Copilot/main/data/fact_nubrakes_velocity_referral_daily.json';
 var BIZ_LIVE_URL = 'https://raw.githubusercontent.com/nubrakes-analytics/NuBrakes-Copilot/main/data/fact_nubrakes_channel_market_kpi_daily.json';
 
-var FALLBACK_DATA = [
-  {Day:"2026-02-25",StoreNumber:"IR1065",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"B Nellessen",StoreManager:"Moses",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1068",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"B Nellessen",StoreManager:"Joseph",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1099",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"B Nellessen",StoreManager:"Christopher",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1100",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"J Peek",StoreManager:"Billy",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1101",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"J Peek",StoreManager:"Exander",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1131",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"B Nellessen",StoreManager:"Edmundo",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1149",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"J Peek",StoreManager:"Zak",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1180",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"B Nellessen",StoreManager:"Frederick",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR1185",Leads:0,CompletedJobs:0,Market:"Austin",Regional:"IRX",Area:"B Nellessen",StoreManager:"Michael",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR5038",Leads:0,CompletedJobs:0,Market:"San Antonio",Regional:"IRX",Area:"B Foley",StoreManager:"Frank",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR5039",Leads:0,CompletedJobs:0,Market:"San Antonio",Regional:"IRX",Area:"B Foley",StoreManager:"Eddie",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR5040",Leads:0,CompletedJobs:0,Market:"San Antonio",Regional:"IRX",Area:"B Foley",StoreManager:"Joshua",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR5041",Leads:0,CompletedJobs:0,Market:"San Antonio",Regional:"IRX",Area:"D Ortiz",StoreManager:"Rolando",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR5042",Leads:0,CompletedJobs:0,Market:"San Antonio",Regional:"IRX",Area:"D Ortiz",StoreManager:"Diego",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0},
-  {Day:"2026-02-25",StoreNumber:"IR5043",Leads:0,CompletedJobs:0,Market:"San Antonio",Regional:"IRX",Area:"B Foley",StoreManager:"Robert",ReferralTarget:0,CompletedTarget:0,Month:"2026-02-01",Week:"2026-02-23",MonthlyReferralTarget:0}
-];
+var FALLBACK_DATA = [];
 
 var RAW = [];
 var BIZ_RAW = [];
@@ -817,19 +801,73 @@ var bizDataSource = 'fallback';
 var smCharts = {}, cmpChart = null;
 var storeViewMode = 'fleet';
 
-var MKT_COLORS = {Atlanta:'#185FA5',Nashville:'#3B6D11',Dallas:'#854F0B',Houston:'#A32D2D',Louisville:'#6D28D9',Austin:'#0ea5e9','San Antonio':'#14b8a6'};
-var DASHBOARD_MARKETS = ['Austin', 'San Antonio'];
-var MARKET_LAUNCH_MONTH = {Nashville:'2026-01',Dallas:'2026-02',Atlanta:'2026-02',Houston:'2026-03',Louisville:'2026-04',Austin:'2026-02','San Antonio':'2026-02'};
+var MKT_COLORS = {
+  Atlanta:'#185FA5',
+  Nashville:'#3B6D11',
+  Dallas:'#854F0B',
+  Houston:'#A32D2D',
+  Louisville:'#6D28D9',
+  Austin:'#0ea5e9',
+  'San Antonio':'#14b8a6'
+};
 
-function marketWasLive(market, monthKey) { var launch = MARKET_LAUNCH_MONTH[market]; if (!launch) return true; return monthKey >= launch; }
-function getAllowedDashboardMarkets() { return DASHBOARD_MARKETS.slice(); }
-function isAllowedDashboardMarket(market) { return getAllowedDashboardMarkets().indexOf(market) >= 0; }
-function getAvailableDashboardMarkets() {
-  return DASHBOARD_MARKETS.filter(function(m){ return RAW.some(function(r){ return r.market === m; }) || BIZ_RAW.some(function(r){ return r.market === m; }); });
+var DASHBOARD_MARKETS = ['Austin', 'San Antonio'];
+
+var MARKET_LAUNCH_MONTH = {
+  Nashville:'2026-01',
+  Dallas:'2026-02',
+  Atlanta:'2026-02',
+  Houston:'2026-03',
+  Louisville:'2026-04',
+  Austin:'2026-02',
+  'San Antonio':'2026-02'
+};
+
+function marketWasLive(market, monthKey) {
+  var launch = MARKET_LAUNCH_MONTH[market];
+  if (!launch) return true;
+  return monthKey >= launch;
 }
-function getOverviewMarkets() { return getAvailableDashboardMarkets(); }
-function pickNum(v) { var n = Number(v); return Number.isFinite(n) ? n : 0; }
-function pickFirst(obj, keys) { for (var i=0;i<keys.length;i++){ var k=keys[i]; if (obj && obj[k] != null && obj[k] !== '') return obj[k]; } return null; }
+
+function getAllowedDashboardMarkets() {
+  return DASHBOARD_MARKETS.slice();
+}
+
+function isAllowedDashboardMarket(market) {
+  return getAllowedDashboardMarkets().indexOf(market) >= 0;
+}
+
+function getAvailableDashboardMarkets() {
+  return DASHBOARD_MARKETS.filter(function(m){
+    return RAW.some(function(r){ return r.market === m; }) ||
+           BIZ_RAW.some(function(r){ return r.market === m; });
+  });
+}
+
+function getOverviewMarkets() {
+  return getAvailableDashboardMarkets();
+}
+
+function pickNum(v) {
+  var n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function wholeTarget(v) {
+  if (v === -1) return -1;
+  var n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return Math.round(n);
+}
+
+function pickFirst(obj, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    if (obj && obj[k] != null && obj[k] !== '') return obj[k];
+  }
+  return null;
+}
+
 function cleanStoreNumber(v) {
   var s = String(v == null ? '' : v).trim();
   if (!s) return NaN;
@@ -853,6 +891,7 @@ function normaliseRow(r) {
   var mrt = mrtRaw != null ? Number(mrtRaw) : null;
   var dayRaw = pickFirst(r, ['Day','day','date','Date']);
   var dayStr = String(dayRaw || '').substring(0,10);
+
   if (!dayStr) return null;
 
   return {
@@ -871,220 +910,1555 @@ function normaliseRow(r) {
   };
 }
 
-function normaliseFallbackRow(r) { return normaliseRow(r); }
+function normaliseFallbackRow(r) {
+  return normaliseRow(r);
+}
 
 function normaliseBizRow(r) {
   var dayRaw = pickFirst(r, ['Day','day','date','Date']);
   var dayStr = String(dayRaw || '').substring(0,10);
   if (!dayStr) return null;
+
   var market = pickFirst(r, ['market','Market']);
   if (!market || market === '#N/A' || !isAllowedDashboardMarket(market)) return null;
+
   var channel = String(pickFirst(r, ['Channel Category','channel_category','channelCategory','cat','channel','Channel']) || '').trim();
-  return {day:dayStr,monthKey:dayStr.substring(0,7),market:market,channel:channel,leads:pickNum(pickFirst(r,['leads','Leads'])),booked:pickNum(pickFirst(r,['jobs_booked','Jobs Booked','booked'])),completed:pickNum(pickFirst(r,['jobs_completed','Completed Jobs','completed'])),revenue:pickNum(pickFirst(r,['revenue','Revenue','invoiced_customer_price']))};
+
+  return {
+    day: dayStr,
+    monthKey: dayStr.substring(0,7),
+    market: market,
+    channel: channel,
+    leads: pickNum(pickFirst(r,['leads','Leads'])),
+    booked: pickNum(pickFirst(r,['jobs_booked','Jobs Booked','booked'])),
+    completed: pickNum(pickFirst(r,['jobs_completed','Completed Jobs','completed'])),
+    revenue: pickNum(pickFirst(r,['revenue','Revenue','invoiced_customer_price']))
+  };
 }
-function isReferralChannel(channel) { return String(channel || '').toLowerCase().indexOf('referral') >= 0; }
+
+function isReferralChannel(channel) {
+  return String(channel || '').toLowerCase().indexOf('referral') >= 0;
+}
 
 function buildDerived() {
   var monthSet = {};
   RAW.forEach(function(r){ monthSet[r.monthKey] = true; });
+
   var bizMonthSet = {};
-  BIZ_RAW.forEach(function(r){ if (isReferralChannel(r.channel)) bizMonthSet[r.monthKey] = true; });
-  var monthOrder = Object.keys(monthSet).concat(Object.keys(bizMonthSet).filter(function(k){ return !monthSet[k]; })).sort();
+  BIZ_RAW.forEach(function(r){
+    if (isReferralChannel(r.channel)) bizMonthSet[r.monthKey] = true;
+  });
+
+  var monthOrder = Object.keys(monthSet)
+    .concat(Object.keys(bizMonthSet).filter(function(k){ return !monthSet[k]; }))
+    .sort();
+
   var latestWithData = '';
+
   monthOrder.forEach(function(mk){
-    var hasLeads = RAW.some(function(r){ return r.monthKey === mk && r.leads > 0; }) || BIZ_RAW.some(function(r){ return r.monthKey === mk && isReferralChannel(r.channel) && r.leads > 0; });
+    var hasLeads =
+      RAW.some(function(r){ return r.monthKey === mk && r.leads > 0; }) ||
+      BIZ_RAW.some(function(r){ return r.monthKey === mk && isReferralChannel(r.channel) && r.leads > 0; });
+
     if (hasLeads) latestWithData = mk;
   });
+
   CURRENT_MONTH_KEY = latestWithData || monthOrder[monthOrder.length - 1] || '';
+
   MONTHS_META = monthOrder.map(function(mk){
-    var parts = mk.split('-'), y = parseInt(parts[0],10), m = parseInt(parts[1],10);
+    var parts = mk.split('-');
+    var y = parseInt(parts[0],10);
+    var m = parseInt(parts[1],10);
     var daysInMonth = new Date(y, m, 0).getDate();
     var isMTD = mk === CURRENT_MONTH_KEY;
     var daysElapsed = daysInMonth;
+
     if (isMTD) {
       var days = RAW.filter(function(r){ return r.monthKey === mk; }).map(function(r){ return r.day; });
-      var bizDays = BIZ_RAW.filter(function(r){ return r.monthKey === mk && isReferralChannel(r.channel); }).map(function(r){ return r.day; });
+      var bizDays = BIZ_RAW.filter(function(r){
+        return r.monthKey === mk && isReferralChannel(r.channel);
+      }).map(function(r){ return r.day; });
+
       var combinedDays = days.concat(bizDays).sort();
-      if (combinedDays.length) daysElapsed = parseInt(combinedDays[combinedDays.length - 1].split('-')[2],10);
+
+      if (combinedDays.length) {
+        daysElapsed = parseInt(combinedDays[combinedDays.length - 1].split('-')[2],10);
+      }
     }
+
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return {key:mk,label:months[m-1]+' '+y,isMTD:isMTD,isFuture:false,daysElapsed:daysElapsed,daysTotal:daysInMonth};
+
+    return {
+      key: mk,
+      label: months[m-1] + ' ' + y,
+      isMTD: isMTD,
+      isFuture: false,
+      daysElapsed: daysElapsed,
+      daysTotal: daysInMonth
+    };
   });
+
   MKTS = getAvailableDashboardMarkets();
+
   if (!selMonthKey) selMonthKey = CURRENT_MONTH_KEY;
 }
 
-function getMeta(monthKey){ return MONTHS_META.find(function(m){ return m.key === monthKey; }) || null; }
-function pc(a,t){ return t > 0 ? Math.round(a / t * 100) : 0; }
-function paceFraction(monthKey){ var meta = getMeta(monthKey); if (!meta || !meta.isMTD) return 1; return meta.daysElapsed / meta.daysTotal; }
-function hasValidTarget(t){ return t > 0; }
-function isPreLaunch(t){ return t === -1; }
-function paceStatus(a,t,pace){ if(t<=0)return{cls:'',label:'no target set',badge:'bt',row:'',sc:'neutral'}; var p=t*pace; if(p<=0)return{cls:'',label:'no target set',badge:'bt',row:'',sc:'neutral'}; var r=a/p; if(r>=1)return{cls:'cg',label:'on or ahead of pace',badge:'bg',row:'win-row',sc:'win'}; if(r>=0.8)return{cls:'ca',label:'within 20% of pace',badge:'ba',row:'warn-row',sc:'warn'}; return{cls:'cr',label:'behind pace',badge:'br',row:'danger-row',sc:'danger'}; }
-function vsPaceStr(a,t,pace){ if(!hasValidTarget(t))return '—'; var v=Math.round(a-t*pace); if(v===0)return 'on pace'; return v>0?'+'+v+' referrals ahead':v+' referrals behind'; }
-function attainOrPaceCell(a,t,pace,isMTD){ if(!isMTD){ if(t<=0)return '—'; return Math.round(a/t*100)+'%'; } return vsPaceStr(a,t,pace); }
-function displayPctBadge(pct, hasTarget){ if(!hasTarget)return '—'; if(pct>=150)return '&gt;150%'; return pct+'%'; }
-function safeColor(m){ return MKT_COLORS[m] || '#185FA5'; }
-function paceNoteText(monthKey){ var meta=getMeta(monthKey); if(!meta||!meta.isMTD)return ''; var pct=Math.round(meta.daysElapsed/meta.daysTotal*100); return 'Pacing note: targets shown are pro-rated to today — day '+meta.daysElapsed+' of '+meta.daysTotal+' ('+pct+'% of month). "vs pace" = actual minus expected at this point in the month. ✅ ≥100% on pace ⚠️ 80–99% at risk 🔴 <80% behind.'; }
-function updateDynamicHeaders(monthKey){
-  var meta=getMeta(monthKey), isMTD=meta&&meta.isMTD, paceHdr=isMTD?'vs pace (MTD)':'% attained', goalHdr=isMTD?'% to paced target':'% attained';
-  var stPct=document.getElementById('st-pct-col-hdr'); if(stPct)stPct.textContent=isMTD?'% to target':'final % to target';
-  var stPace=document.getElementById('st-pace-col-hdr'); if(stPace)stPace.textContent=isMTD?'vs pace (MTD)':'';
-  var amPace=document.getElementById('am-pace-col-hdr'); if(amPace)amPace.textContent=paceHdr;
-  var amAttain=document.getElementById('am-attain-col-hdr'); if(amAttain)amAttain.textContent=goalHdr;
-  var mktPace=document.getElementById('mkt-pace-col-hdr'); if(mktPace)mktPace.textContent=paceHdr;
-  var mktAttain=document.getElementById('mkt-attain-col-hdr'); if(mktAttain)mktAttain.textContent=goalHdr;
-  var note=paceNoteText(monthKey), smLabel=document.getElementById('sm-pace-note-label'), smTooltip=document.getElementById('pace-tooltip'), paceBtn=document.getElementById('pace-info-btn');
-  if(smLabel)smLabel.textContent=note && meta && meta.isMTD ? 'Paced target: '+Math.round(meta.daysElapsed/meta.daysTotal*100)+'% of month elapsed' : '';
-  if(smTooltip)smTooltip.textContent=note;
-  if(paceBtn&&smTooltip){ paceBtn.style.display=note?'inline-flex':'none'; paceBtn.onmouseenter=function(){smTooltip.style.display='block'}; paceBtn.onmouseleave=function(){smTooltip.style.display='none'}; }
+function getMeta(monthKey) {
+  return MONTHS_META.find(function(m){ return m.key === monthKey; }) || null;
 }
-function makeScorecard(l,v,s,t){ var toneCls=t==='win'?'bg':t==='danger'?'br':t==='warn'?'ba':'bt'; return '<div class="mc"><div class="ml">'+l+'</div><div class="mv">'+v+'</div><div class="ms"><span class="b '+toneCls+'">'+s+'</span></div></div>'; }
-function pillHTML(monthKey){ var meta=getMeta(monthKey); if(!meta)return ''; var staleWarn=(meta.isMTD&&DATA_AGE_DAYS>2)?' <span class="status-pill status-pill--warning" style="display:inline-flex;margin-left:4px"><span class="status-dot"></span><span class="status-text">Data '+DATA_AGE_DAYS+' days stale</span></span>':''; if(meta.isMTD)return '<span class="mtd-pill">MTD — '+meta.daysElapsed+' of '+meta.daysTotal+' days</span>'+staleWarn; return '<span class="complete-pill">Complete month</span>'; }
-function dateRangeLabel(monthKey){ var meta=getMeta(monthKey); if(!meta)return ''; var parts=monthKey.split('-'), y=parts[0], m=parseInt(parts[1],10), months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], mn=months[m-1]; if(meta.isMTD)return mn+' 1 – '+mn+' '+meta.daysElapsed+', '+y+' (month-to-date)'; return mn+' 1 – '+mn+' '+meta.daysTotal+', '+y+' (complete)'; }
-function marketManagerLabel(market){ var seen={}; RAW.forEach(function(r){ if(r.market===market&&r.regional)seen[r.regional]=true; }); return Object.keys(seen).join(' / ') || '—'; }
-function monthMarketTotals(monthKey, market){ var rows=RAW.filter(function(r){return r.monthKey===monthKey&&r.market===market}); var leads=0,comp=0,storeSet={}; rows.forEach(function(r){leads+=r.leads;comp+=r.completedJobs;storeSet[r.storeNum]=true}); return{leads:leads,comp:comp,storeCount:Object.keys(storeSet).length}; }
-function bizMonthMarketTotals(monthKey, market){ var rows=BIZ_RAW.filter(function(r){return r.monthKey===monthKey&&r.market===market&&isReferralChannel(r.channel)}); return rows.reduce(function(acc,r){acc.leads+=r.leads;acc.booked+=r.booked;acc.completed+=r.completed;acc.revenue+=r.revenue;return acc},{leads:0,booked:0,completed:0,revenue:0}); }
-function marketOverviewActuals(monthKey, market){ var bizTotals=bizMonthMarketTotals(monthKey,market); if(BIZ_RAW&&BIZ_RAW.length&&bizTotals.leads>0)return bizTotals.leads; return monthMarketTotals(monthKey,market).leads; }
-function monthlyTargetForStoreMonth(storeNum, monthKey){
-  var storeMarket=null; for(var i=0;i<RAW.length;i++){ if(RAW[i].storeNum==storeNum){storeMarket=RAW[i].market;break;} }
-  if(storeMarket&&!marketWasLive(storeMarket,monthKey))return -1;
-  var rows=RAW.filter(function(r){return r.storeNum==storeNum&&r.monthKey===monthKey}); if(!rows.length)return 0;
-  var monthlyRows=rows.filter(function(r){return typeof r.monthlyRefTarget==='number'&&!isNaN(r.monthlyRefTarget)&&r.monthlyRefTarget>0});
-  if(monthlyRows.length>0){ var sum=0; monthlyRows.forEach(function(r){sum+=r.monthlyRefTarget}); return sum/monthlyRows.length; }
-  var meta=getMeta(monthKey), seenDay={}, sumDaily=0, hasDaily=false;
-  rows.forEach(function(r){ if(!seenDay[r.day]){ seenDay[r.day]=true; if(r.dailyRefTarget>0)hasDaily=true; sumDaily+=(r.dailyRefTarget||0); } });
-  if(!hasDaily)return 0;
-  if(meta&&meta.isMTD&&meta.daysElapsed>0)return sumDaily*meta.daysTotal/meta.daysElapsed;
-  return sumDaily;
-}
-function monthlyTarget(monthKey, market){ var storeMap={}; RAW.filter(function(r){return r.monthKey===monthKey&&r.market===market}).forEach(function(r){storeMap[r.storeNum]=true}); var total=Object.keys(storeMap).reduce(function(sum,sn){var t=monthlyTargetForStoreMonth(sn,monthKey); return sum+(hasValidTarget(t)?t:0);},0); return Math.round(total); }
-function uniqueStores(monthKey, market){ var seen={}; RAW.filter(function(r){return r.monthKey===monthKey&&r.market===market}).forEach(function(r){seen[r.storeNum]=true}); return Object.keys(seen).length; }
-function areasForMarket(market){ var seen={}; RAW.forEach(function(r){if(r.market===market&&r.area)seen[r.area]=true}); return Object.keys(seen).sort(); }
-function uniqueAreasCount(monthKey, market){ var seen={}; RAW.filter(function(r){return r.monthKey===monthKey&&r.market===market&&r.area}).forEach(function(r){seen[r.area]=true}); return Object.keys(seen).length; }
 
-function buildAllDDs(){
-  ['month-dd','am-month-dd','st-month-dd'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; el.innerHTML=MONTHS_META.map(function(m){var lbl=m.label+(m.isMTD?' — MTD':''); return '<option value="'+m.key+'"'+(m.key===selMonthKey?' selected':'')+'>'+lbl+'</option>';}).join(''); });
-  var cmpSel=document.getElementById('cmp-sel'); if(cmpSel)cmpSel.innerHTML=MONTHS_META.map(function(m){var lbl=m.label+(m.isMTD?' — MTD':''); return '<option value="'+m.key+'"'+(m.key===selMonthKey?' selected':'')+'>'+lbl+'</option>';}).join('');
-  var myStoreSel=document.getElementById('my-store-sel'); if(myStoreSel){ var current=myStoreSel.value, all=[]; RAW.forEach(function(r){if(all.indexOf(r.storeNum)<0)all.push(r.storeNum)}); all.sort(function(a,b){return a-b}); myStoreSel.innerHTML='<option value="">— select —</option>'+all.map(function(n){return '<option value="'+n+'"'+(String(n)===current?' selected':'')+'>Store '+n+'</option>';}).join(''); }
-  ['am-mkt-sel','mkt-sel'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var cur=el.value||'all'; el.innerHTML='<option value="all">All markets</option>'+MKTS.map(function(m){return '<option value="'+m+'">'+m+'</option>';}).join(''); el.value=MKTS.indexOf(cur)>=0?cur:'all'; });
+function pc(a,t) {
+  var target = wholeTarget(t);
+  return target > 0 ? Math.round(a / target * 100) : 0;
 }
-function selectMonth(key){
-  selMonthKey=key; buildAllDDs(); updateDynamicHeaders(key);
-  var dl=dateRangeLabel(key), ph=pillHTML(key);
-  ['dr-lbl','am-dr','st-dr'].forEach(function(id){var e=document.getElementById(id); if(e)e.textContent=dl});
-  ['period-pill','am-pill','st-pill'].forEach(function(id){var e=document.getElementById(id); if(e)e.innerHTML=ph});
-  buildOv(); renderAM((document.getElementById('am-mkt-sel')||{}).value||'all'); renderS();
+
+function paceFraction(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta || !meta.isMTD) return 1;
+  return meta.daysElapsed / meta.daysTotal;
 }
-function filterMkt(mkt){
-  selMarketKey=mkt; var amMktSel=document.getElementById('am-mkt-sel'); if(amMktSel&&amMktSel.value!==mkt)amMktSel.value=mkt;
-  var sel=document.getElementById('am-sel'); if(!sel)return; sel.innerHTML='<option value="all">All areas</option>';
-  var baseMarkets=getAvailableDashboardMarkets(); var areas=mkt==='all'?Array.from(new Set(RAW.filter(function(r){return baseMarkets.indexOf(r.market)>=0}).map(function(r){return r.area}).filter(Boolean))).sort():areasForMarket(mkt);
-  areas.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o)});
+
+function pacedTarget(t, pace) {
+  return wholeTarget(wholeTarget(t) * pace);
+}
+
+function hasValidTarget(t) {
+  return wholeTarget(t) > 0;
+}
+
+function isPreLaunch(t) {
+  return t === -1;
+}
+
+function paceStatus(a,t,pace) {
+  var fullTarget = wholeTarget(t);
+
+  if (fullTarget <= 0) {
+    return {cls:'',label:'no target set',badge:'bt',row:'',sc:'neutral'};
+  }
+
+  var p = pacedTarget(fullTarget, pace);
+
+  if (p <= 0) {
+    return {cls:'',label:'no target set',badge:'bt',row:'',sc:'neutral'};
+  }
+
+  var r = a / p;
+
+  if (r >= 1) return {cls:'cg',label:'on or ahead of pace',badge:'bg',row:'win-row',sc:'win'};
+  if (r >= 0.8) return {cls:'ca',label:'within 20% of pace',badge:'ba',row:'warn-row',sc:'warn'};
+
+  return {cls:'cr',label:'behind pace',badge:'br',row:'danger-row',sc:'danger'};
+}
+
+function vsPaceStr(a,t,pace) {
+  var fullTarget = wholeTarget(t);
+  if (!hasValidTarget(fullTarget)) return '—';
+
+  var p = pacedTarget(fullTarget, pace);
+  var v = Math.round(a - p);
+
+  if (v === 0) return 'on pace';
+  return v > 0 ? '+' + v + ' referrals ahead' : v + ' referrals behind';
+}
+
+function attainOrPaceCell(a,t,pace,isMTD) {
+  var fullTarget = wholeTarget(t);
+
+  if (!isMTD) {
+    if (fullTarget <= 0) return '—';
+    return Math.round(a / fullTarget * 100) + '%';
+  }
+
+  return vsPaceStr(a, fullTarget, pace);
+}
+
+function displayPctBadge(pct, hasTarget) {
+  if (!hasTarget) return '—';
+  if (pct >= 150) return '&gt;150%';
+  return pct + '%';
+}
+
+function safeColor(m) {
+  return MKT_COLORS[m] || '#185FA5';
+}
+
+function paceNoteText(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta || !meta.isMTD) return '';
+
+  var pct = Math.round(meta.daysElapsed / meta.daysTotal * 100);
+
+  return 'Pacing note: targets shown are pro-rated to today — day ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' (' + pct + '% of month). "vs pace" = actual minus expected at this point in the month. ✅ ≥100% on pace ⚠️ 80–99% at risk 🔴 <80% behind.';
+}
+
+function updateDynamicHeaders(monthKey) {
+  var meta = getMeta(monthKey);
+  var isMTD = meta && meta.isMTD;
+  var paceHdr = isMTD ? 'vs pace (MTD)' : '% attained';
+  var goalHdr = isMTD ? '% to paced target' : '% attained';
+
+  var stPct = document.getElementById('st-pct-col-hdr');
+  if (stPct) stPct.textContent = isMTD ? '% to target' : 'final % to target';
+
+  var stPace = document.getElementById('st-pace-col-hdr');
+  if (stPace) stPace.textContent = isMTD ? 'vs pace (MTD)' : '';
+
+  var amPace = document.getElementById('am-pace-col-hdr');
+  if (amPace) amPace.textContent = paceHdr;
+
+  var amAttain = document.getElementById('am-attain-col-hdr');
+  if (amAttain) amAttain.textContent = goalHdr;
+
+  var mktPace = document.getElementById('mkt-pace-col-hdr');
+  if (mktPace) mktPace.textContent = paceHdr;
+
+  var mktAttain = document.getElementById('mkt-attain-col-hdr');
+  if (mktAttain) mktAttain.textContent = goalHdr;
+
+  var note = paceNoteText(monthKey);
+  var smLabel = document.getElementById('sm-pace-note-label');
+  var smTooltip = document.getElementById('pace-tooltip');
+  var paceBtn = document.getElementById('pace-info-btn');
+
+  if (smLabel) {
+    smLabel.textContent = note && meta && meta.isMTD
+      ? 'Paced target: ' + Math.round(meta.daysElapsed / meta.daysTotal * 100) + '% of month elapsed'
+      : '';
+  }
+
+  if (smTooltip) smTooltip.textContent = note;
+
+  if (paceBtn && smTooltip) {
+    paceBtn.style.display = note ? 'inline-flex' : 'none';
+    paceBtn.onmouseenter = function(){ smTooltip.style.display = 'block'; };
+    paceBtn.onmouseleave = function(){ smTooltip.style.display = 'none'; };
+  }
+}
+
+function makeScorecard(l,v,s,t) {
+  var toneCls = t === 'win' ? 'bg' : t === 'danger' ? 'br' : t === 'warn' ? 'ba' : 'bt';
+
+  return '<div class="mc"><div class="ml">' + l + '</div><div class="mv">' + v + '</div><div class="ms"><span class="b ' + toneCls + '">' + s + '</span></div></div>';
+}
+
+function pillHTML(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta) return '';
+
+  var staleWarn = (meta.isMTD && DATA_AGE_DAYS > 2)
+    ? ' <span class="status-pill status-pill--warning" style="display:inline-flex;margin-left:4px"><span class="status-dot"></span><span class="status-text">Data ' + DATA_AGE_DAYS + ' days stale</span></span>'
+    : '';
+
+  if (meta.isMTD) {
+    return '<span class="mtd-pill">MTD — ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' days</span>' + staleWarn;
+  }
+
+  return '<span class="complete-pill">Complete month</span>';
+}
+
+function dateRangeLabel(monthKey) {
+  var meta = getMeta(monthKey);
+  if (!meta) return '';
+
+  var parts = monthKey.split('-');
+  var y = parts[0];
+  var m = parseInt(parts[1],10);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mn = months[m-1];
+
+  if (meta.isMTD) {
+    return mn + ' 1 – ' + mn + ' ' + meta.daysElapsed + ', ' + y + ' (month-to-date)';
+  }
+
+  return mn + ' 1 – ' + mn + ' ' + meta.daysTotal + ', ' + y + ' (complete)';
+}
+
+function marketManagerLabel(market) {
+  var seen = {};
+
+  RAW.forEach(function(r){
+    if (r.market === market && r.regional) seen[r.regional] = true;
+  });
+
+  return Object.keys(seen).join(' / ') || '—';
+}
+
+function monthMarketTotals(monthKey, market) {
+  var rows = RAW.filter(function(r){
+    return r.monthKey === monthKey && r.market === market;
+  });
+
+  var leads = 0;
+  var comp = 0;
+  var storeSet = {};
+
+  rows.forEach(function(r){
+    leads += r.leads;
+    comp += r.completedJobs;
+    storeSet[r.storeNum] = true;
+  });
+
+  return {
+    leads: leads,
+    comp: comp,
+    storeCount: Object.keys(storeSet).length
+  };
+}
+
+function bizMonthMarketTotals(monthKey, market) {
+  var rows = BIZ_RAW.filter(function(r){
+    return r.monthKey === monthKey &&
+           r.market === market &&
+           isReferralChannel(r.channel);
+  });
+
+  return rows.reduce(function(acc,r){
+    acc.leads += r.leads;
+    acc.booked += r.booked;
+    acc.completed += r.completed;
+    acc.revenue += r.revenue;
+    return acc;
+  }, {leads:0, booked:0, completed:0, revenue:0});
+}
+
+function marketOverviewActuals(monthKey, market) {
+  var bizTotals = bizMonthMarketTotals(monthKey,market);
+
+  if (BIZ_RAW && BIZ_RAW.length && bizTotals.leads > 0) {
+    return bizTotals.leads;
+  }
+
+  return monthMarketTotals(monthKey,market).leads;
+}
+
+function monthlyTargetForStoreMonth(storeNum, monthKey) {
+  var storeMarket = null;
+
+  for (var i = 0; i < RAW.length; i++) {
+    if (RAW[i].storeNum == storeNum) {
+      storeMarket = RAW[i].market;
+      break;
+    }
+  }
+
+  if (storeMarket && !marketWasLive(storeMarket, monthKey)) return -1;
+
+  var rows = RAW.filter(function(r){
+    return r.storeNum == storeNum && r.monthKey === monthKey;
+  });
+
+  if (!rows.length) return 0;
+
+  var monthlyRows = rows.filter(function(r){
+    return typeof r.monthlyRefTarget === 'number' &&
+           !isNaN(r.monthlyRefTarget) &&
+           r.monthlyRefTarget > 0;
+  });
+
+  if (monthlyRows.length > 0) {
+    var sum = 0;
+
+    monthlyRows.forEach(function(r){
+      sum += r.monthlyRefTarget;
+    });
+
+    return wholeTarget(sum / monthlyRows.length);
+  }
+
+  var meta = getMeta(monthKey);
+  var seenDay = {};
+  var sumDaily = 0;
+  var hasDaily = false;
+
+  rows.forEach(function(r){
+    if (!seenDay[r.day]) {
+      seenDay[r.day] = true;
+
+      if (r.dailyRefTarget > 0) hasDaily = true;
+      sumDaily += (r.dailyRefTarget || 0);
+    }
+  });
+
+  if (!hasDaily) return 0;
+
+  if (meta && meta.isMTD && meta.daysElapsed > 0) {
+    return wholeTarget(sumDaily * meta.daysTotal / meta.daysElapsed);
+  }
+
+  return wholeTarget(sumDaily);
+}
+
+function monthlyTarget(monthKey, market) {
+  var storeMap = {};
+
+  RAW.filter(function(r){
+    return r.monthKey === monthKey && r.market === market;
+  }).forEach(function(r){
+    storeMap[r.storeNum] = true;
+  });
+
+  var total = Object.keys(storeMap).reduce(function(sum, sn){
+    var t = monthlyTargetForStoreMonth(sn, monthKey);
+    return sum + (hasValidTarget(t) ? wholeTarget(t) : 0);
+  }, 0);
+
+  return wholeTarget(total);
+}
+
+function uniqueStores(monthKey, market) {
+  var seen = {};
+
+  RAW.filter(function(r){
+    return r.monthKey === monthKey && r.market === market;
+  }).forEach(function(r){
+    seen[r.storeNum] = true;
+  });
+
+  return Object.keys(seen).length;
+}
+
+function areasForMarket(market) {
+  var seen = {};
+
+  RAW.forEach(function(r){
+    if (r.market === market && r.area) seen[r.area] = true;
+  });
+
+  return Object.keys(seen).sort();
+}
+
+function uniqueAreasCount(monthKey, market) {
+  var seen = {};
+
+  RAW.filter(function(r){
+    return r.monthKey === monthKey && r.market === market && r.area;
+  }).forEach(function(r){
+    seen[r.area] = true;
+  });
+
+  return Object.keys(seen).length;
+}
+
+function buildAllDDs() {
+  ['month-dd','am-month-dd','st-month-dd'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+
+    el.innerHTML = MONTHS_META.map(function(m){
+      var lbl = m.label + (m.isMTD ? ' — MTD' : '');
+      return '<option value="' + m.key + '"' + (m.key === selMonthKey ? ' selected' : '') + '>' + lbl + '</option>';
+    }).join('');
+  });
+
+  var cmpSel = document.getElementById('cmp-sel');
+
+  if (cmpSel) {
+    cmpSel.innerHTML = MONTHS_META.map(function(m){
+      var lbl = m.label + (m.isMTD ? ' — MTD' : '');
+      return '<option value="' + m.key + '"' + (m.key === selMonthKey ? ' selected' : '') + '>' + lbl + '</option>';
+    }).join('');
+  }
+
+  var myStoreSel = document.getElementById('my-store-sel');
+
+  if (myStoreSel) {
+    var current = myStoreSel.value;
+    var all = [];
+
+    RAW.forEach(function(r){
+      if (all.indexOf(r.storeNum) < 0) all.push(r.storeNum);
+    });
+
+    all.sort(function(a,b){ return a-b; });
+
+    myStoreSel.innerHTML =
+      '<option value="">— select —</option>' +
+      all.map(function(n){
+        return '<option value="' + n + '"' + (String(n) === current ? ' selected' : '') + '>Store ' + n + '</option>';
+      }).join('');
+  }
+
+  ['am-mkt-sel','mkt-sel'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+
+    var cur = el.value || 'all';
+
+    el.innerHTML =
+      '<option value="all">All markets</option>' +
+      MKTS.map(function(m){
+        return '<option value="' + m + '">' + m + '</option>';
+      }).join('');
+
+    el.value = MKTS.indexOf(cur) >= 0 ? cur : 'all';
+  });
+}
+
+function selectMonth(key) {
+  selMonthKey = key;
+  buildAllDDs();
+  updateDynamicHeaders(key);
+
+  var dl = dateRangeLabel(key);
+  var ph = pillHTML(key);
+
+  ['dr-lbl','am-dr','st-dr'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.textContent = dl;
+  });
+
+  ['period-pill','am-pill','st-pill'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.innerHTML = ph;
+  });
+
+  buildOv();
+  renderAM((document.getElementById('am-mkt-sel') || {}).value || 'all');
   renderS();
 }
 
-function renderS(){
-  var mk=selMonthKey, pace=paceFraction(mk), isMTD=(getMeta(mk)||{}).isMTD, mktF=(document.getElementById('mkt-sel')||{}).value||'all', amF=(document.getElementById('am-sel')||{}).value||'all';
-  var storeMap={};
-  RAW.forEach(function(r){ if(!isAllowedDashboardMarket(r.market))return; if(storeViewMode==='fleet'){ if(mktF!=='all'&&r.market!==mktF)return; if(amF!=='all'&&r.area!==amF)return; } if(!storeMap[r.storeNum])storeMap[r.storeNum]={n:r.storeNum,mgr:r.storeManager||'—',area:r.area||'—',mkt:r.market,a:0,t:0}; if(r.monthKey===mk)storeMap[r.storeNum].a+=r.leads; });
-  Object.keys(storeMap).forEach(function(sn){storeMap[sn].t=monthlyTargetForStoreMonth(sn,mk)});
-  var data=Object.values(storeMap).map(function(s){ var effectiveTgt=isMTD&&s.t>0?s.t*pace:s.t; var pct=effectiveTgt>0?Math.round(s.a/effectiveTgt*100):0; return{n:s.n,mgr:s.mgr,area:s.area,mkt:s.mkt,a:s.a,t:s.t,effectiveTgt:effectiveTgt,pctToTarget:pct,ps:paceStatus(s.a,s.t,pace)}; });
-  var withTarget=data.filter(function(s){return hasValidTarget(s.t)}), sortedByPct=withTarget.slice().sort(function(a,b){return b.pctToTarget-a.pctToTarget}), tqCount=Math.max(1,Math.ceil(sortedByPct.length*0.25)), topQ=sortedByPct.slice(0,tqCount), topQSet=new Set(topQ.map(function(s){return s.n}));
-  var on=data.filter(function(s){return s.ps.cls==='cg'}).length, at=data.filter(function(s){return s.ps.cls==='ca'}).length, bh=data.filter(function(s){return s.ps.cls==='cr'}).length, avg=withTarget.length?Math.round(withTarget.reduce(function(s,x){return s+x.pctToTarget},0)/withTarget.length)+'%':'—';
-  var myStoreSel=document.getElementById('my-store-sel'), myStoreNum=(storeViewMode==='mystore'&&myStoreSel&&myStoreSel.value)?Number(myStoreSel.value):0, myStoreData=myStoreNum?data.find(function(s){return s.n===myStoreNum}):null;
-  var scorecardsEl=document.getElementById('st-scorecards'); if(scorecardsEl){ if(myStoreData){scorecardsEl.innerHTML='';scorecardsEl.style.display='none'}else{scorecardsEl.style.display='';scorecardsEl.innerHTML=makeScorecard('On track',on,'≥ 100% of paced target','win')+makeScorecard('At risk',at,'80–99% of paced target','warn')+makeScorecard('Behind',bh,'< 80% of paced target','danger')+makeScorecard('Avg % to target',avg,'stores with targets','neutral'); } }
-  var tqWrap=document.getElementById('tq-callout-wrap'); if(tqWrap){
-    if(storeViewMode==='mystore'&&!myStoreData){ tqWrap.innerHTML='<div style="padding:20px;text-align:center;color:#9ca3af;font-size:13px">Select your store number above to see your snapshot.</div>'; }
-    else if(myStoreData){ var ms=myStoreData, hasT=hasValidTarget(ms.t), myRank=sortedByPct.findIndex(function(s){return s.n===myStoreNum}), rankLabel=myRank>=0?(myRank+1)+' of '+sortedByPct.length:'—', pacedTgt=hasT?(isMTD?Math.round(ms.t*pace):ms.t):null, barW=pacedTgt>0?Math.min(Math.round(ms.a/pacedTgt*100),100):0, barColor=ms.ps.cls==='cg'?'#1d9e75':ms.ps.cls==='ca'?'#ba7517':'#a32d2d';
-      tqWrap.innerHTML='<div style="background:#eff6ff;border:1.5px solid #3b82f6;border-radius:10px;padding:16px 20px;margin-bottom:16px"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px"><div style="font-size:14px;font-weight:700;color:#1e40af">Store '+ms.n+' — '+ms.mgr+'</div><div style="font-size:12px;color:#3b82f6;font-weight:600">Ranked '+rankLabel+' this period</div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-bottom:14px"><div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe"><div style="font-size:11px;color:#6b7280;margin-bottom:3px">Referrals</div><div style="font-size:22px;font-weight:700;color:#1e3a8a">'+ms.a+'</div></div>'+(hasT?'<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe"><div style="font-size:11px;color:#6b7280;margin-bottom:3px">'+(isMTD?'Paced target':'Target')+'</div><div style="font-size:22px;font-weight:700;color:#1e3a8a">'+pacedTgt+'</div></div><div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe"><div style="font-size:11px;color:#6b7280;margin-bottom:3px">% to target</div><div style="font-size:22px;font-weight:700;color:'+(ms.pctToTarget>=100?'#065f46':ms.pctToTarget>=80?'#92400e':'#9f1239')+'">'+displayPctBadge(ms.pctToTarget,true)+'</div></div>':'')+'</div>'+(hasT?'<div style="margin-bottom:10px"><div style="height:8px;background:#dbeafe;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+barW+'%;background:'+barColor+';border-radius:4px"></div></div></div>':'')+'<div style="font-size:12px;color:#6b7280">'+(isMTD?vsPaceStr(ms.a,ms.t,pace):'Complete month')+'</div></div>';
-    } else if(!sortedByPct.length){ tqWrap.innerHTML=''; }
-    else { function stOrdinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])} var top3=sortedByPct.slice(0,3); tqWrap.innerHTML='<div class="slbl" style="margin-bottom:8px">Top stores this period</div><div class="mgrid">'+top3.map(function(s,i){var ps=paceStatus(s.a,s.t,pace),fc=ps.cls==='cg'?'fg':ps.cls==='ca'?'fa':'fr',stCls=ps.cls==='cg'?'st-win':ps.cls==='ca'?'st-warn':'st-danger',actualW=Math.min(s.pctToTarget,100),paceW=Math.min(Math.round(pace*100),100),cardCls=i===0?'rank-1-card':i===1?'rank-2-card':'rank-3-card',numCls=i===0?'rn-1':i===1?'rn-2':'rn-3'; return '<div class="mcard '+cardCls+'" style="margin-top:'+(i===0?'14px':'0')+'">'+(i===0?'<div class="rank-crown">🏆</div>':'')+'<div class="rank-num '+numCls+'">'+stOrdinal(i+1)+'</div><div class="mcard-mkt">Store '+s.n+'</div><div class="mcard-mgr">'+s.mgr+' · '+s.area+'</div><div class="mcard-nums"><span class="mcard-actual">'+s.a+'</span><span class="mcard-tgt">of '+parseFloat(s.t.toFixed(1))+' target</span></div><div style="position:relative;margin-bottom:8px"><div class="pbb"><div class="pbf '+fc+'" style="width:'+actualW+'%"></div></div>'+(isMTD?'<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:'+paceW+'%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>':'')+'</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="mcard-status '+stCls+'">'+vsPaceStr(s.a,s.t,pace)+'</span><span style="font-size:12px;color:#888780">'+s.pctToTarget+'% to '+(isMTD?'paced ':'')+'target</span></div></div>';}).join('')+'</div>'; }
+function filterMkt(mkt) {
+  selMarketKey = mkt;
+
+  var amMktSel = document.getElementById('am-mkt-sel');
+  if (amMktSel && amMktSel.value !== mkt) amMktSel.value = mkt;
+
+  var sel = document.getElementById('am-sel');
+  if (!sel) return;
+
+  sel.innerHTML = '<option value="all">All areas</option>';
+
+  var baseMarkets = getAvailableDashboardMarkets();
+
+  var areas = mkt === 'all'
+    ? Array.from(new Set(
+        RAW.filter(function(r){ return baseMarkets.indexOf(r.market) >= 0; })
+          .map(function(r){ return r.area; })
+          .filter(Boolean)
+      )).sort()
+    : areasForMarket(mkt);
+
+  areas.forEach(function(a){
+    var o = document.createElement('option');
+    o.value = a;
+    o.textContent = a;
+    sel.appendChild(o);
+  });
+
+  renderS();
+}
+
+function renderS() {
+  var mk = selMonthKey;
+  var pace = paceFraction(mk);
+  var isMTD = (getMeta(mk) || {}).isMTD;
+  var mktF = (document.getElementById('mkt-sel') || {}).value || 'all';
+  var amF = (document.getElementById('am-sel') || {}).value || 'all';
+
+  var storeMap = {};
+
+  RAW.forEach(function(r){
+    if (!isAllowedDashboardMarket(r.market)) return;
+
+    if (storeViewMode === 'fleet') {
+      if (mktF !== 'all' && r.market !== mktF) return;
+      if (amF !== 'all' && r.area !== amF) return;
+    }
+
+    if (!storeMap[r.storeNum]) {
+      storeMap[r.storeNum] = {
+        n: r.storeNum,
+        mgr: r.storeManager || '—',
+        area: r.area || '—',
+        mkt: r.market,
+        a: 0,
+        t: 0
+      };
+    }
+
+    if (r.monthKey === mk) {
+      storeMap[r.storeNum].a += r.leads;
+    }
+  });
+
+  Object.keys(storeMap).forEach(function(sn){
+    storeMap[sn].t = wholeTarget(monthlyTargetForStoreMonth(sn, mk));
+  });
+
+  var data = Object.values(storeMap).map(function(s){
+    var fullTarget = wholeTarget(s.t);
+    var effectiveTgt = isMTD && fullTarget > 0 ? pacedTarget(fullTarget, pace) : fullTarget;
+    var pct = effectiveTgt > 0 ? Math.round(s.a / effectiveTgt * 100) : 0;
+
+    return {
+      n: s.n,
+      mgr: s.mgr,
+      area: s.area,
+      mkt: s.mkt,
+      a: s.a,
+      t: fullTarget,
+      effectiveTgt: effectiveTgt,
+      pctToTarget: pct,
+      ps: paceStatus(s.a, fullTarget, pace)
+    };
+  });
+
+  var withTarget = data.filter(function(s){ return hasValidTarget(s.t); });
+
+  var sortedByPct = withTarget.slice().sort(function(a,b){
+    return b.pctToTarget - a.pctToTarget;
+  });
+
+  var tqCount = Math.max(1, Math.ceil(sortedByPct.length * 0.25));
+  var topQ = sortedByPct.slice(0, tqCount);
+  var topQSet = new Set(topQ.map(function(s){ return s.n; }));
+
+  var on = data.filter(function(s){ return s.ps.cls === 'cg'; }).length;
+  var at = data.filter(function(s){ return s.ps.cls === 'ca'; }).length;
+  var bh = data.filter(function(s){ return s.ps.cls === 'cr'; }).length;
+
+  var avg = withTarget.length
+    ? Math.round(withTarget.reduce(function(s,x){ return s + x.pctToTarget; },0) / withTarget.length) + '%'
+    : '—';
+
+  var myStoreSel = document.getElementById('my-store-sel');
+  var myStoreNum = (storeViewMode === 'mystore' && myStoreSel && myStoreSel.value)
+    ? Number(myStoreSel.value)
+    : 0;
+
+  var myStoreData = myStoreNum
+    ? data.find(function(s){ return s.n === myStoreNum; })
+    : null;
+
+  var scorecardsEl = document.getElementById('st-scorecards');
+
+  if (scorecardsEl) {
+    if (myStoreData) {
+      scorecardsEl.innerHTML = '';
+      scorecardsEl.style.display = 'none';
+    } else {
+      scorecardsEl.style.display = '';
+      scorecardsEl.innerHTML =
+        makeScorecard('On track',on,'≥ 100% of paced target','win') +
+        makeScorecard('At risk',at,'80–99% of paced target','warn') +
+        makeScorecard('Behind',bh,'< 80% of paced target','danger') +
+        makeScorecard('Avg % to target',avg,'stores with targets','neutral');
+    }
   }
-  var scoresHdr=document.querySelector('#sh-st-scores .slbl'); if(scoresHdr)scoresHdr.textContent=storeViewMode==='mystore'?(myStoreData?'My store — Store '+myStoreNum:'My store'):'Leaderboard & summary';
-  var sub=document.getElementById('st-tbl-sub'), paceHdr=document.getElementById('st-pace-col-hdr'); if(paceHdr)paceHdr.style.display=isMTD?'':'none'; if(sub)sub.textContent=isMTD?'% to paced target ('+Math.round(pace*100)+'% of month elapsed) with separate vs pace column':'Completed month — showing final % to target only';
-  var noTarget=data.filter(function(s){return !hasValidTarget(s.t)}), allSorted=sortedByPct.concat(noTarget);
-  document.getElementById('stbl').innerHTML=allSorted.map(function(s,idx){ var isTopQ=topQSet.has(s.n), isMyStore=myStoreNum&&s.n===myStoreNum, rowCls=(isMyStore?'my-store-row':s.ps.row)+' dr', hasT=hasValidTarget(s.t), preLaunch=isPreLaunch(s.t), tgtCell=preLaunch?'<td class="tr" style="color:#9ca3af;font-size:11px">pre-launch</td>':'<td class="tr">'+(hasT?parseFloat(s.t.toFixed(1)):'—')+'</td>', pctBadge=hasT?'<span class="b '+(s.pctToTarget>=100?'bg':s.pctToTarget>=80?'ba':'br')+'">'+displayPctBadge(s.pctToTarget,true)+'</span>':'—', paceCell=isMTD?'<td class="tr '+s.ps.cls+'" style="font-size:12px">'+vsPaceStr(s.a,s.t,pace)+'</td>':'<td class="tr" style="display:none"></td>', storeCell=isMyStore?'<td style="font-weight:700">'+s.n+'<span class="my-store-badge">You</span></td>':'<td style="font-weight:500">'+s.n+'</td>'; return '<tr class="'+rowCls+'">'+storeCell+'<td style="font-size:12px">'+s.mgr+'</td><td style="font-size:12px;color:#5F5E5A">'+s.area+'</td><td style="font-size:12px;color:#888780">'+s.mkt+'</td>'+tgtCell+'<td class="tr">'+s.a+'</td><td class="tr">'+pctBadge+'</td>'+paceCell+'<td class="tr">'+(isTopQ?'<span class="b bg" style="padding:2px 6px">🏆</span>':'')+'</td></tr>'; }).join('');
-  var stHeadRow=document.querySelector('#pg-st thead tr'); if(stHeadRow){var ths=stHeadRow.querySelectorAll('th'); if(ths[7])ths[7].style.display=isMTD?'':'none'}
-  document.querySelectorAll('#stbl tr').forEach(function(row){var cells=row.querySelectorAll('td'); if(cells[7])cells[7].style.display=isMTD?'':'none'});
-  var stFoot=document.getElementById('st-foot'); if(stFoot)stFoot.textContent=isMTD?'Sorted highest to lowest % to paced target. Separate vs pace column shown for MTD months. Gold rows = top 25%.':'Sorted highest to lowest final % to target. Only one attainment column is shown for completed months. Gold rows = top 25%.';
-  refreshCollapsible('sb-st-scores'); refreshCollapsible('sb-st-tbl');
+
+  var tqWrap = document.getElementById('tq-callout-wrap');
+
+  if (tqWrap) {
+    if (storeViewMode === 'mystore' && !myStoreData) {
+      tqWrap.innerHTML = '<div style="padding:20px;text-align:center;color:#9ca3af;font-size:13px">Select your store number above to see your snapshot.</div>';
+    } else if (myStoreData) {
+      var ms = myStoreData;
+      var hasT = hasValidTarget(ms.t);
+      var myRank = sortedByPct.findIndex(function(s){ return s.n === myStoreNum; });
+      var rankLabel = myRank >= 0 ? (myRank + 1) + ' of ' + sortedByPct.length : '—';
+      var pacedTgt = hasT ? (isMTD ? pacedTarget(ms.t, pace) : wholeTarget(ms.t)) : null;
+      var barW = pacedTgt > 0 ? Math.min(Math.round(ms.a / pacedTgt * 100),100) : 0;
+      var barColor = ms.ps.cls === 'cg' ? '#1d9e75' : ms.ps.cls === 'ca' ? '#ba7517' : '#a32d2d';
+
+      tqWrap.innerHTML =
+        '<div style="background:#eff6ff;border:1.5px solid #3b82f6;border-radius:10px;padding:16px 20px;margin-bottom:16px">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">' +
+            '<div style="font-size:14px;font-weight:700;color:#1e40af">Store ' + ms.n + ' — ' + ms.mgr + '</div>' +
+            '<div style="font-size:12px;color:#3b82f6;font-weight:600">Ranked ' + rankLabel + ' this period</div>' +
+          '</div>' +
+
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-bottom:14px">' +
+            '<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe">' +
+              '<div style="font-size:11px;color:#6b7280;margin-bottom:3px">Referrals</div>' +
+              '<div style="font-size:22px;font-weight:700;color:#1e3a8a">' + ms.a + '</div>' +
+            '</div>' +
+
+            (hasT ?
+              '<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe">' +
+                '<div style="font-size:11px;color:#6b7280;margin-bottom:3px">' + (isMTD ? 'Paced target' : 'Target') + '</div>' +
+                '<div style="font-size:22px;font-weight:700;color:#1e3a8a">' + pacedTgt + '</div>' +
+              '</div>' +
+              '<div style="background:#fff;border-radius:8px;padding:10px 12px;border:0.5px solid #bfdbfe">' +
+                '<div style="font-size:11px;color:#6b7280;margin-bottom:3px">% to target</div>' +
+                '<div style="font-size:22px;font-weight:700;color:' + (ms.pctToTarget >= 100 ? '#065f46' : ms.pctToTarget >= 80 ? '#92400e' : '#9f1239') + '">' + displayPctBadge(ms.pctToTarget,true) + '</div>' +
+              '</div>'
+              : ''
+            ) +
+          '</div>' +
+
+          (hasT ?
+            '<div style="margin-bottom:10px">' +
+              '<div style="height:8px;background:#dbeafe;border-radius:4px;overflow:hidden">' +
+                '<div style="height:100%;width:' + barW + '%;background:' + barColor + ';border-radius:4px"></div>' +
+              '</div>' +
+            '</div>'
+            : ''
+          ) +
+
+          '<div style="font-size:12px;color:#6b7280">' + (isMTD ? vsPaceStr(ms.a,ms.t,pace) : 'Complete month') + '</div>' +
+        '</div>';
+    } else if (!sortedByPct.length) {
+      tqWrap.innerHTML = '';
+    } else {
+      function stOrdinal(n) {
+        var s = ["th","st","nd","rd"];
+        var v = n % 100;
+        return n + (s[(v-20)%10] || s[v] || s[0]);
+      }
+
+      var top3 = sortedByPct.slice(0,3);
+
+      tqWrap.innerHTML =
+        '<div class="slbl" style="margin-bottom:8px">Top stores this period</div>' +
+        '<div class="mgrid">' +
+        top3.map(function(s,i){
+          var ps = paceStatus(s.a,s.t,pace);
+          var fc = ps.cls === 'cg' ? 'fg' : ps.cls === 'ca' ? 'fa' : 'fr';
+          var stCls = ps.cls === 'cg' ? 'st-win' : ps.cls === 'ca' ? 'st-warn' : 'st-danger';
+          var actualW = Math.min(s.pctToTarget,100);
+          var paceW = Math.min(Math.round(pace * 100),100);
+          var cardCls = i === 0 ? 'rank-1-card' : i === 1 ? 'rank-2-card' : 'rank-3-card';
+          var numCls = i === 0 ? 'rn-1' : i === 1 ? 'rn-2' : 'rn-3';
+
+          return '<div class="mcard ' + cardCls + '" style="margin-top:' + (i === 0 ? '14px' : '0') + '">' +
+            (i === 0 ? '<div class="rank-crown">🏆</div>' : '') +
+            '<div class="rank-num ' + numCls + '">' + stOrdinal(i+1) + '</div>' +
+            '<div class="mcard-mkt">Store ' + s.n + '</div>' +
+            '<div class="mcard-mgr">' + s.mgr + ' · ' + s.area + '</div>' +
+            '<div class="mcard-nums"><span class="mcard-actual">' + s.a + '</span><span class="mcard-tgt">of ' + wholeTarget(s.t) + ' target</span></div>' +
+            '<div style="position:relative;margin-bottom:8px">' +
+              '<div class="pbb"><div class="pbf ' + fc + '" style="width:' + actualW + '%"></div></div>' +
+              (isMTD ? '<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:' + paceW + '%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>' : '') +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+              '<span class="mcard-status ' + stCls + '">' + vsPaceStr(s.a,s.t,pace) + '</span>' +
+              '<span style="font-size:12px;color:#888780">' + s.pctToTarget + '% to ' + (isMTD ? 'paced ' : '') + 'target</span>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+        '</div>';
+    }
+  }
+
+  var scoresHdr = document.querySelector('#sh-st-scores .slbl');
+  if (scoresHdr) scoresHdr.textContent = storeViewMode === 'mystore'
+    ? (myStoreData ? 'My store — Store ' + myStoreNum : 'My store')
+    : 'Leaderboard & summary';
+
+  var sub = document.getElementById('st-tbl-sub');
+  var paceHdr = document.getElementById('st-pace-col-hdr');
+
+  if (paceHdr) paceHdr.style.display = isMTD ? '' : 'none';
+
+  if (sub) {
+    sub.textContent = isMTD
+      ? '% to paced target (' + Math.round(pace * 100) + '% of month elapsed) with separate vs pace column'
+      : 'Completed month — showing final % to target only';
+  }
+
+  var noTarget = data.filter(function(s){ return !hasValidTarget(s.t); });
+  var allSorted = sortedByPct.concat(noTarget);
+
+  document.getElementById('stbl').innerHTML = allSorted.map(function(s){
+    var isTopQ = topQSet.has(s.n);
+    var isMyStore = myStoreNum && s.n === myStoreNum;
+    var rowCls = (isMyStore ? 'my-store-row' : s.ps.row) + ' dr';
+    var hasT = hasValidTarget(s.t);
+    var preLaunch = isPreLaunch(s.t);
+
+    var tgtCell = preLaunch
+      ? '<td class="tr" style="color:#9ca3af;font-size:11px">pre-launch</td>'
+      : '<td class="tr">' + (hasT ? wholeTarget(s.t) : '—') + '</td>';
+
+    var pctBadge = hasT
+      ? '<span class="b ' + (s.pctToTarget >= 100 ? 'bg' : s.pctToTarget >= 80 ? 'ba' : 'br') + '">' + displayPctBadge(s.pctToTarget,true) + '</span>'
+      : '—';
+
+    var paceCell = isMTD
+      ? '<td class="tr ' + s.ps.cls + '" style="font-size:12px">' + vsPaceStr(s.a,s.t,pace) + '</td>'
+      : '<td class="tr" style="display:none"></td>';
+
+    var storeCell = isMyStore
+      ? '<td style="font-weight:700">' + s.n + '<span class="my-store-badge">You</span></td>'
+      : '<td style="font-weight:500">' + s.n + '</td>';
+
+    return '<tr class="' + rowCls + '">' +
+      storeCell +
+      '<td style="font-size:12px">' + s.mgr + '</td>' +
+      '<td style="font-size:12px;color:#5F5E5A">' + s.area + '</td>' +
+      '<td style="font-size:12px;color:#888780">' + s.mkt + '</td>' +
+      tgtCell +
+      '<td class="tr">' + s.a + '</td>' +
+      '<td class="tr">' + pctBadge + '</td>' +
+      paceCell +
+      '<td class="tr">' + (isTopQ ? '<span class="b bg" style="padding:2px 6px">🏆</span>' : '') + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var stHeadRow = document.querySelector('#pg-st thead tr');
+
+  if (stHeadRow) {
+    var ths = stHeadRow.querySelectorAll('th');
+    if (ths[7]) ths[7].style.display = isMTD ? '' : 'none';
+  }
+
+  document.querySelectorAll('#stbl tr').forEach(function(row){
+    var cells = row.querySelectorAll('td');
+    if (cells[7]) cells[7].style.display = isMTD ? '' : 'none';
+  });
+
+  var stFoot = document.getElementById('st-foot');
+
+  if (stFoot) {
+    stFoot.textContent = isMTD
+      ? 'Sorted highest to lowest % to paced target. Separate vs pace column shown for MTD months. Gold rows = top 25%.'
+      : 'Sorted highest to lowest final % to target. Only one attainment column is shown for completed months. Gold rows = top 25%.';
+  }
+
+  refreshCollapsible('sb-st-scores');
+  refreshCollapsible('sb-st-tbl');
 }
 
-function renderAM(filterMarket){
-  var mk=selMonthKey, pace=paceFraction(mk), isMTD=(getMeta(mk)||{}).isMTD, areas={};
-  RAW.forEach(function(r){ if(!isAllowedDashboardMarket(r.market)||!r.area)return; if(filterMarket!=='all'&&r.market!==filterMarket)return; var k=r.market+'||'+r.area; if(!areas[k])areas[k]={area:r.area,market:r.market,regional:marketManagerLabel(r.market),storeNums:{},a:0,t:0}; areas[k].storeNums[r.storeNum]=true; if(r.monthKey===mk)areas[k].a+=r.leads; });
-  Object.keys(areas).forEach(function(k){areas[k].t=Object.keys(areas[k].storeNums).reduce(function(sum,sn){var t=monthlyTargetForStoreMonth(sn,mk); return sum+(hasValidTarget(t)?t:0)},0)});
-  var data=Object.values(areas).map(function(r){var e=isMTD&&hasValidTarget(r.t)?r.t*pace:(hasValidTarget(r.t)?r.t:0), pct=e>0?Math.round(r.a/e*100):0; return{name:r.area,market:r.market,regional:r.regional,cnt:Object.keys(r.storeNums).length,a:r.a,t:r.t,effectiveTgt:e,pctToTarget:pct,ps:paceStatus(r.a,r.t,pace)}}).sort(function(a,b){return (a.effectiveTgt>0?a.a/a.effectiveTgt:-1)-(b.effectiveTgt>0?b.a/b.effectiveTgt:-1)});
-  var on=data.filter(function(x){return x.ps.cls==='cg'}).length, at=data.filter(function(x){return x.ps.cls==='ca'}).length, bh=data.filter(function(x){return x.ps.cls==='cr'}).length, wa=data.filter(function(x){return x.t>0}), avg=wa.length?Math.round(wa.reduce(function(s,x){return s+x.pctToTarget},0)/wa.length)+'%':'—';
-  document.getElementById('am-scorecards').innerHTML=makeScorecard('On track',on,'≥100% of paced target','win')+makeScorecard('At risk',at,'80–99% of paced target','warn')+makeScorecard('Behind',bh,'<80% of paced target','danger')+makeScorecard('Avg % to target',avg,isMTD?'vs paced target':'vs full-month target','neutral');
-  var af=document.getElementById('am-foot'); if(af)af.textContent=isMTD?'% to target uses paced target ('+Math.round(pace*100)+'% of month elapsed) — consistent with store table.':'Complete month — % to target is final attainment vs full monthly target.';
-  document.getElementById('amtbl').innerHTML=data.map(function(r){var hasT=hasValidTarget(r.t), tgtCell=isPreLaunch(r.t)?'<td class="tr" style="color:#9ca3af;font-size:11px">pre-launch</td>':!hasT?'<td class="tr" style="color:#9ca3af">—</td>':'<td class="tr">'+parseFloat(r.t.toFixed(1))+'</td>', paceCell=isMTD&&hasT?'<td class="tr '+r.ps.cls+'" style="font-size:12px">'+vsPaceStr(r.a,r.t,pace)+'</td>':isMTD?'<td class="tr" style="color:#9ca3af">—</td>':'<td class="tr" style="color:#374151">'+attainOrPaceCell(r.a,r.t,pace,false)+'</td>', badge=hasT?'<span class="b '+(r.pctToTarget>=100?'bg':r.pctToTarget>=80?'ba':'br')+'">'+displayPctBadge(r.pctToTarget,true)+'</span>':'—'; return '<tr class="dr '+r.ps.row+'"><td style="font-weight:500">'+r.name+'</td><td style="font-size:12px;color:#888780">'+r.market+'</td><td style="font-size:12px;color:#888780">'+r.regional+'</td><td class="tr">'+r.cnt+'</td>'+tgtCell+'<td class="tr">'+r.a+'</td>'+paceCell+'<td class="tr">'+badge+'</td></tr>';}).join('');
-  var ldrData=data.filter(function(r){return hasValidTarget(r.t)}).slice().sort(function(a,b){return b.pctToTarget-a.pctToTarget}).slice(0,3), amCards=document.getElementById('am-mcards'); if(amCards){ if(!ldrData.length)amCards.innerHTML='<div style="color:#9ca3af;font-size:13px;padding:12px">No targets set for this period.</div>'; else amCards.innerHTML=ldrData.map(function(r,i){var ps=paceStatus(r.a,r.t,pace),fc=ps.cls==='cg'?'fg':ps.cls==='ca'?'fa':'fr',stCls=ps.cls==='cg'?'st-win':ps.cls==='ca'?'st-warn':'st-danger',actualW=Math.min(r.pctToTarget,100),paceW=Math.min(Math.round(pace*100),100); function ordinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])} var cardCls=i===0?'rank-1-card':i===1?'rank-2-card':'rank-3-card',numCls=i===0?'rn-1':i===1?'rn-2':'rn-3'; return '<div class="mcard '+cardCls+'" style="margin-top:'+(i===0?'14px':'0')+'">'+(i===0?'<div class="rank-crown">🏆</div>':'')+'<div class="rank-num '+numCls+'">'+ordinal(i+1)+'</div><div class="mcard-mkt">'+r.name+'</div><div class="mcard-mgr">'+r.market+' · '+r.cnt+' store'+(r.cnt!==1?'s':'')+'</div><div class="mcard-nums"><span class="mcard-actual">'+r.a+'</span><span class="mcard-tgt">of '+parseFloat(r.t.toFixed(1))+' target</span></div><div style="position:relative;margin-bottom:8px"><div class="pbb"><div class="pbf '+fc+'" style="width:'+actualW+'%"></div></div>'+(isMTD?'<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:'+paceW+'%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>':'')+'</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="mcard-status '+stCls+'">'+vsPaceStr(r.a,r.t,pace)+'</span><span style="font-size:12px;color:#888780">'+r.pctToTarget+'% to '+(isMTD?'paced ':'')+'target</span></div></div>';}).join(''); refreshCollapsible('sb-am-ldr'); }
+function renderAM(filterMarket) {
+  var mk = selMonthKey;
+  var pace = paceFraction(mk);
+  var isMTD = (getMeta(mk) || {}).isMTD;
+  var areas = {};
+
+  RAW.forEach(function(r){
+    if (!isAllowedDashboardMarket(r.market) || !r.area) return;
+    if (filterMarket !== 'all' && r.market !== filterMarket) return;
+
+    var k = r.market + '||' + r.area;
+
+    if (!areas[k]) {
+      areas[k] = {
+        area: r.area,
+        market: r.market,
+        regional: marketManagerLabel(r.market),
+        storeNums: {},
+        a: 0,
+        t: 0
+      };
+    }
+
+    areas[k].storeNums[r.storeNum] = true;
+
+    if (r.monthKey === mk) {
+      areas[k].a += r.leads;
+    }
+  });
+
+  Object.keys(areas).forEach(function(k){
+    areas[k].t = wholeTarget(Object.keys(areas[k].storeNums).reduce(function(sum, sn){
+      var t = monthlyTargetForStoreMonth(sn, mk);
+      return sum + (hasValidTarget(t) ? wholeTarget(t) : 0);
+    }, 0));
+  });
+
+  var data = Object.values(areas).map(function(r){
+    var fullTarget = wholeTarget(r.t);
+    var e = isMTD && hasValidTarget(fullTarget) ? pacedTarget(fullTarget, pace) : fullTarget;
+    var pct = e > 0 ? Math.round(r.a / e * 100) : 0;
+
+    return {
+      name: r.area,
+      market: r.market,
+      regional: r.regional,
+      cnt: Object.keys(r.storeNums).length,
+      a: r.a,
+      t: fullTarget,
+      effectiveTgt: e,
+      pctToTarget: pct,
+      ps: paceStatus(r.a, fullTarget, pace)
+    };
+  }).sort(function(a,b){
+    return (a.effectiveTgt > 0 ? a.a / a.effectiveTgt : -1) -
+           (b.effectiveTgt > 0 ? b.a / b.effectiveTgt : -1);
+  });
+
+  var on = data.filter(function(x){ return x.ps.cls === 'cg'; }).length;
+  var at = data.filter(function(x){ return x.ps.cls === 'ca'; }).length;
+  var bh = data.filter(function(x){ return x.ps.cls === 'cr'; }).length;
+  var wa = data.filter(function(x){ return x.t > 0; });
+
+  var avg = wa.length
+    ? Math.round(wa.reduce(function(s,x){ return s + x.pctToTarget; },0) / wa.length) + '%'
+    : '—';
+
+  document.getElementById('am-scorecards').innerHTML =
+    makeScorecard('On track',on,'≥100% of paced target','win') +
+    makeScorecard('At risk',at,'80–99% of paced target','warn') +
+    makeScorecard('Behind',bh,'<80% of paced target','danger') +
+    makeScorecard('Avg % to target',avg,isMTD ? 'vs paced target' : 'vs full-month target','neutral');
+
+  var af = document.getElementById('am-foot');
+
+  if (af) {
+    af.textContent = isMTD
+      ? '% to target uses paced target (' + Math.round(pace * 100) + '% of month elapsed) — consistent with store table.'
+      : 'Complete month — % to target is final attainment vs full monthly target.';
+  }
+
+  document.getElementById('amtbl').innerHTML = data.map(function(r){
+    var hasT = hasValidTarget(r.t);
+
+    var tgtCell = isPreLaunch(r.t)
+      ? '<td class="tr" style="color:#9ca3af;font-size:11px">pre-launch</td>'
+      : !hasT
+        ? '<td class="tr" style="color:#9ca3af">—</td>'
+        : '<td class="tr">' + wholeTarget(r.t) + '</td>';
+
+    var paceCell = isMTD && hasT
+      ? '<td class="tr ' + r.ps.cls + '" style="font-size:12px">' + vsPaceStr(r.a,r.t,pace) + '</td>'
+      : isMTD
+        ? '<td class="tr" style="color:#9ca3af">—</td>'
+        : '<td class="tr" style="color:#374151">' + attainOrPaceCell(r.a,r.t,pace,false) + '</td>';
+
+    var badge = hasT
+      ? '<span class="b ' + (r.pctToTarget >= 100 ? 'bg' : r.pctToTarget >= 80 ? 'ba' : 'br') + '">' + displayPctBadge(r.pctToTarget,true) + '</span>'
+      : '—';
+
+    return '<tr class="dr ' + r.ps.row + '">' +
+      '<td style="font-weight:500">' + r.name + '</td>' +
+      '<td style="font-size:12px;color:#888780">' + r.market + '</td>' +
+      '<td style="font-size:12px;color:#888780">' + r.regional + '</td>' +
+      '<td class="tr">' + r.cnt + '</td>' +
+      tgtCell +
+      '<td class="tr">' + r.a + '</td>' +
+      paceCell +
+      '<td class="tr">' + badge + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var ldrData = data.filter(function(r){
+    return hasValidTarget(r.t);
+  }).slice().sort(function(a,b){
+    return b.pctToTarget - a.pctToTarget;
+  }).slice(0,3);
+
+  var amCards = document.getElementById('am-mcards');
+
+  if (amCards) {
+    if (!ldrData.length) {
+      amCards.innerHTML = '<div style="color:#9ca3af;font-size:13px;padding:12px">No targets set for this period.</div>';
+    } else {
+      amCards.innerHTML = ldrData.map(function(r,i){
+        var ps = paceStatus(r.a,r.t,pace);
+        var fc = ps.cls === 'cg' ? 'fg' : ps.cls === 'ca' ? 'fa' : 'fr';
+        var stCls = ps.cls === 'cg' ? 'st-win' : ps.cls === 'ca' ? 'st-warn' : 'st-danger';
+        var actualW = Math.min(r.pctToTarget,100);
+        var paceW = Math.min(Math.round(pace * 100),100);
+
+        function ordinal(n) {
+          var s = ["th","st","nd","rd"];
+          var v = n % 100;
+          return n + (s[(v-20)%10] || s[v] || s[0]);
+        }
+
+        var cardCls = i === 0 ? 'rank-1-card' : i === 1 ? 'rank-2-card' : 'rank-3-card';
+        var numCls = i === 0 ? 'rn-1' : i === 1 ? 'rn-2' : 'rn-3';
+
+        return '<div class="mcard ' + cardCls + '" style="margin-top:' + (i === 0 ? '14px' : '0') + '">' +
+          (i === 0 ? '<div class="rank-crown">🏆</div>' : '') +
+          '<div class="rank-num ' + numCls + '">' + ordinal(i+1) + '</div>' +
+          '<div class="mcard-mkt">' + r.name + '</div>' +
+          '<div class="mcard-mgr">' + r.market + ' · ' + r.cnt + ' store' + (r.cnt !== 1 ? 's' : '') + '</div>' +
+          '<div class="mcard-nums"><span class="mcard-actual">' + r.a + '</span><span class="mcard-tgt">of ' + wholeTarget(r.t) + ' target</span></div>' +
+          '<div style="position:relative;margin-bottom:8px">' +
+            '<div class="pbb"><div class="pbf ' + fc + '" style="width:' + actualW + '%"></div></div>' +
+            (isMTD ? '<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:' + paceW + '%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>' : '') +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+            '<span class="mcard-status ' + stCls + '">' + vsPaceStr(r.a,r.t,pace) + '</span>' +
+            '<span style="font-size:12px;color:#888780">' + r.pctToTarget + '% to ' + (isMTD ? 'paced ' : '') + 'target</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      refreshCollapsible('sb-am-ldr');
+    }
+  }
 }
 
-function getMktRollup(monthKey){ return getOverviewMarkets().map(function(m){var actualLeads=marketOverviewActuals(monthKey,m), stores=uniqueStores(monthKey,m); return{m:m,cnt:stores,areas:uniqueAreasCount(monthKey,m),a:actualLeads,t:monthlyTarget(monthKey,m),avgS:stores>0?actualLeads/stores:0};}); }
-function buildOv(){
-  var mk=selMonthKey, meta=getMeta(mk), pace=paceFraction(mk), isMTD=meta&&meta.isMTD;
-  if(!mk||!meta)return;
-  document.getElementById('mkt-tbl-title').textContent='Market summary — '+meta.label;
-  document.getElementById('mkt-foot').textContent=isMTD?'Actual uses referral leads from business outcomes raw data when available. vs pace = actual minus paced target.':'Complete month — actuals use business outcomes raw data when available, targets use referral target dataset.';
-  var mkEl=document.getElementById('metric-key'); if(isMTD){mkEl.innerHTML='<div class="mk-item"><span class="mk-label">Paced target</span><span class="mk-desc">Monthly target × (days elapsed ÷ days in month). Day '+meta.daysElapsed+' of '+meta.daysTotal+' = '+Math.round(pace*100)+'% of month.</span></div><div class="mk-item"><span class="mk-label">vs pace (MTD)</span><span class="mk-desc">Actual minus paced target. Positive = ahead, negative = behind.</span></div><div class="mk-item"><span class="mk-label">Actual source</span><span class="mk-desc">Referral values come from KPI raw data when available; otherwise referral dataset leads are used.</span></div>'; mkEl.style.display='flex';} else mkEl.style.display='none';
-  var rows=getMktRollup(mk), ta=rows.reduce(function(s,r){return s+r.a},0), tt=rows.reduce(function(s,r){return s+r.t},0), oPS=paceStatus(ta,tt,pace), effectiveTT=isMTD&&tt>0?Math.round(tt*pace):tt, ovPct=effectiveTT>0?Math.round(ta/effectiveTT*100):0;
-  document.getElementById('ov-scorecards').innerHTML=makeScorecard('Total referrals',ta,'referral leads','neutral')+makeScorecard(isMTD?'Paced target':'Monthly target',isMTD?effectiveTT:tt,isMTD?'day '+meta.daysElapsed+' of '+meta.daysTotal:meta.label,'neutral')+makeScorecard('Overall attainment',effectiveTT>0?ovPct+'%':'—',isMTD?'vs paced target':'final attainment',oPS.sc)+makeScorecard(isMTD?'Days elapsed':'Month status',isMTD?(meta.daysElapsed+' / '+meta.daysTotal):'Complete',isMTD?Math.round(pace*100)+'% of month done':'Full results','neutral');
-  var ranked=rows.slice().map(function(r){r.effectiveTgt=isMTD&&r.t>0?r.t*pace:r.t; r.pctToPace=r.effectiveTgt>0?r.a/r.effectiveTgt:0; r.pctToTarget=r.effectiveTgt>0?Math.round(r.a/r.effectiveTgt*100):0; return r;}).sort(function(a,b){return b.pctToPace-a.pctToPace});
-  document.getElementById('mcards').innerHTML=ranked.map(function(r,i){var ps=paceStatus(r.a,r.t,pace),actualW=r.t>0?Math.min(Math.round(r.a/r.t*100),100):0,paceW=Math.min(Math.round(pace*100),100),fc=ps.cls==='cg'?'fg':ps.cls==='ca'?'fa':'fr',stCls=ps.cls==='cg'?'st-win':ps.cls==='ca'?'st-warn':'st-danger'; function ordinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])} var cardCls=i===0?'rank-1-card':i===1?'rank-2-card':i===2?'rank-3-card':'rank-4-card',numCls=i===0?'rn-1':i===1?'rn-2':i===2?'rn-3':'rn-4'; return '<div class="mcard '+cardCls+'" style="margin-top:'+(i===0?'14px':'0')+'">'+(i===0?'<div class="rank-crown">🏆</div>':'')+'<div class="rank-num '+numCls+'">'+ordinal(i+1)+'</div><div class="mcard-mkt">'+r.m+'</div><div class="mcard-mgr">'+marketManagerLabel(r.m)+'</div><div class="mcard-nums"><span class="mcard-actual">'+r.a+'</span><span class="mcard-tgt">of '+r.t+' target</span></div><div style="position:relative;margin-bottom:8px"><div class="pbb"><div class="pbf '+fc+'" style="width:'+actualW+'%"></div></div>'+(isMTD?'<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:'+paceW+'%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>':'')+'</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="mcard-status '+stCls+'">'+vsPaceStr(r.a,r.t,pace)+'</span><span style="font-size:12px;color:#888780">'+(r.t>0?r.pctToTarget:0)+'% to '+(isMTD?'paced target':'goal')+'</span></div></div>';}).join('');
-  document.getElementById('mtbl').innerHTML=ranked.map(function(r,i){var ps=paceStatus(r.a,r.t,pace),pv=r.t>0?r.a-Math.round(r.t*pace):null; return '<tr class="dr '+ps.row+'"><td style="font-size:12px;color:#888780;font-weight:500">'+(i+1)+'</td><td style="font-weight:500">'+r.m+'</td><td style="color:#888780;font-size:12px">'+marketManagerLabel(r.m)+'</td><td class="tr">'+r.areas+'</td><td class="tr">'+r.cnt+'</td><td class="tr">'+r.t+'</td><td class="tr">'+r.a+'</td><td class="tr" style="font-weight:500">'+r.avgS.toFixed(1)+'</td><td class="tr '+ps.cls+'" style="font-size:12px">'+(pv!==null?vsPaceStr(r.a,r.t,pace):'—')+'</td><td class="tr"><span class="b '+ps.badge+'">'+displayPctBadge(r.pctToTarget,r.t>0)+'</span></td></tr>';}).join('');
-  buildSM(); refreshCollapsible('sb-ov-scores'); refreshCollapsible('sb-ov-ldr'); refreshCollapsible('sb-ov-tbl'); setTimeout(function(){refreshCollapsible('sb-ov-charts')},100);
+function getMktRollup(monthKey) {
+  return getOverviewMarkets().map(function(m){
+    var actualLeads = marketOverviewActuals(monthKey,m);
+    var stores = uniqueStores(monthKey,m);
+    var target = wholeTarget(monthlyTarget(monthKey,m));
+
+    return {
+      m: m,
+      cnt: stores,
+      areas: uniqueAreasCount(monthKey,m),
+      a: actualLeads,
+      t: target,
+      avgS: stores > 0 ? actualLeads / stores : 0
+    };
+  });
 }
-function setCV(v){ document.querySelectorAll('.tgbtn').forEach(function(b,i){b.classList.toggle('on',(i===0&&v==='sm')||(i===1&&v==='cmp'))}); document.getElementById('cv-sm').classList.toggle('on',v==='sm'); document.getElementById('cv-cmp').classList.toggle('on',v==='cmp'); if(v==='sm')buildSM(); else buildCmp(); }
-function buildSM(){
-  var mk=selMonthKey, meta=getMeta(mk), isMTD=meta&&meta.isMTD, pace=paceFraction(mk), overviewMarkets=getOverviewMarkets(), grid=document.getElementById('sm-grid');
-  if(!grid)return; grid.innerHTML=overviewMarkets.map(function(m){return '<div class="sm-card"><div class="sm-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:'+safeColor(m)+'">'+m+'</span><span id="sm-stat-'+m.replace(/[^a-zA-Z0-9_-]/g,'_')+'"></span></div><div style="position:relative;height:150px"><canvas id="sm-'+m.replace(/[^a-zA-Z0-9_-]/g,'_')+'"></canvas></div></div>';}).join('');
-  overviewMarkets.forEach(function(m){ var id=m.replace(/[^a-zA-Z0-9_-]/g,'_'), actualMonths=MONTHS_META.slice(-6), labels=actualMonths.map(function(mm){return mm.label.substring(0,3)}), actuals=actualMonths.map(function(mm){return marketOverviewActuals(mm.key,m)}), targets=actualMonths.map(function(mm){return monthlyTarget(mm.key,m)}), idx=actualMonths.findIndex(function(mm){return mm.key===mk}), bp=(idx>=0&&targets[idx]>0)?(isMTD?pc(marketOverviewActuals(mk,m),Math.round(monthlyTarget(mk,m)*pace)):pc(marketOverviewActuals(mk,m),monthlyTarget(mk,m))):0, bb=bp>=100?'#1d9e75':bp>=80?'#ba7517':'#a32d2d', statEl=document.getElementById('sm-stat-'+id); if(statEl)statEl.innerHTML='<span style="font-weight:700;border-radius:20px;padding:2px 8px;font-size:11px;background:'+bb+';color:#fff">'+bp+'%'+(isMTD?' of pace':'')+'</span>'; var bgs=actualMonths.map(function(mm){return mm.isMTD?safeColor(m)+'55':safeColor(m)}); if(smCharts[m])smCharts[m].destroy(); var ctx=document.getElementById('sm-'+id); if(!ctx)return; smCharts[m]=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{label:'Actual',data:actuals,backgroundColor:bgs,borderRadius:6,order:2},{label:'Target',data:targets,type:'line',borderColor:safeColor(m),borderWidth:1.5,borderDash:[5,4],pointRadius:3,pointBackgroundColor:'#fff',pointBorderColor:safeColor(m),pointBorderWidth:2,fill:false,tension:0,order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label==='Target'?'Target: '+ctx.parsed.y:'Actual: '+ctx.parsed.y+(actualMonths[ctx.dataIndex].isMTD?' (MTD)':'')},title:function(ctx){return m+' — '+actualMonths[ctx[0].dataIndex].label}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888780'}},y:{grid:{color:'#F1EFE8'},ticks:{font:{size:10},color:'#888780'},suggestedMax:Math.max.apply(null,targets.concat(actuals).concat([1]))*1.15}}}}); });
+
+function buildOv() {
+  var mk = selMonthKey;
+  var meta = getMeta(mk);
+  var pace = paceFraction(mk);
+  var isMTD = meta && meta.isMTD;
+
+  if (!mk || !meta) return;
+
+  document.getElementById('mkt-tbl-title').textContent = 'Market summary — ' + meta.label;
+
+  document.getElementById('mkt-foot').textContent = isMTD
+    ? 'Actual uses referral leads from business outcomes raw data when available. vs pace = actual minus paced target.'
+    : 'Complete month — actuals use business outcomes raw data when available, targets use referral target dataset.';
+
+  var mkEl = document.getElementById('metric-key');
+
+  if (isMTD) {
+    mkEl.innerHTML =
+      '<div class="mk-item"><span class="mk-label">Paced target</span><span class="mk-desc">Monthly target × (days elapsed ÷ days in month). Day ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' = ' + Math.round(pace * 100) + '% of month.</span></div>' +
+      '<div class="mk-item"><span class="mk-label">vs pace (MTD)</span><span class="mk-desc">Actual minus paced target. Positive = ahead, negative = behind.</span></div>' +
+      '<div class="mk-item"><span class="mk-label">Actual source</span><span class="mk-desc">Referral values come from KPI raw data when available; otherwise referral dataset leads are used.</span></div>';
+
+    mkEl.style.display = 'flex';
+  } else {
+    mkEl.style.display = 'none';
+  }
+
+  var rows = getMktRollup(mk);
+  var ta = rows.reduce(function(s,r){ return s + r.a; },0);
+  var tt = wholeTarget(rows.reduce(function(s,r){ return s + wholeTarget(r.t); },0));
+  var oPS = paceStatus(ta,tt,pace);
+  var effectiveTT = isMTD && tt > 0 ? pacedTarget(tt, pace) : tt;
+  var ovPct = effectiveTT > 0 ? Math.round(ta / effectiveTT * 100) : 0;
+
+  document.getElementById('ov-scorecards').innerHTML =
+    makeScorecard('Total referrals',ta,'referral leads','neutral') +
+    makeScorecard(isMTD ? 'Paced target' : 'Monthly target',effectiveTT,isMTD ? 'day ' + meta.daysElapsed + ' of ' + meta.daysTotal : meta.label,'neutral') +
+    makeScorecard('Overall attainment',effectiveTT > 0 ? ovPct + '%' : '—',isMTD ? 'vs paced target' : 'final attainment',oPS.sc) +
+    makeScorecard(isMTD ? 'Days elapsed' : 'Month status',isMTD ? (meta.daysElapsed + ' / ' + meta.daysTotal) : 'Complete',isMTD ? Math.round(pace * 100) + '% of month done' : 'Full results','neutral');
+
+  var ranked = rows.slice().map(function(r){
+    r.t = wholeTarget(r.t);
+    r.effectiveTgt = isMTD && r.t > 0 ? pacedTarget(r.t, pace) : r.t;
+    r.pctToPace = r.effectiveTgt > 0 ? r.a / r.effectiveTgt : 0;
+    r.pctToTarget = r.effectiveTgt > 0 ? Math.round(r.a / r.effectiveTgt * 100) : 0;
+    return r;
+  }).sort(function(a,b){
+    return b.pctToPace - a.pctToPace;
+  });
+
+  document.getElementById('mcards').innerHTML = ranked.map(function(r,i){
+    var ps = paceStatus(r.a,r.t,pace);
+    var actualW = r.t > 0 ? Math.min(Math.round(r.a / r.t * 100),100) : 0;
+    var paceW = Math.min(Math.round(pace * 100),100);
+    var fc = ps.cls === 'cg' ? 'fg' : ps.cls === 'ca' ? 'fa' : 'fr';
+    var stCls = ps.cls === 'cg' ? 'st-win' : ps.cls === 'ca' ? 'st-warn' : 'st-danger';
+
+    function ordinal(n) {
+      var s = ["th","st","nd","rd"];
+      var v = n % 100;
+      return n + (s[(v-20)%10] || s[v] || s[0]);
+    }
+
+    var cardCls = i === 0 ? 'rank-1-card' : i === 1 ? 'rank-2-card' : i === 2 ? 'rank-3-card' : 'rank-4-card';
+    var numCls = i === 0 ? 'rn-1' : i === 1 ? 'rn-2' : i === 2 ? 'rn-3' : 'rn-4';
+
+    return '<div class="mcard ' + cardCls + '" style="margin-top:' + (i === 0 ? '14px' : '0') + '">' +
+      (i === 0 ? '<div class="rank-crown">🏆</div>' : '') +
+      '<div class="rank-num ' + numCls + '">' + ordinal(i+1) + '</div>' +
+      '<div class="mcard-mkt">' + r.m + '</div>' +
+      '<div class="mcard-mgr">' + marketManagerLabel(r.m) + '</div>' +
+      '<div class="mcard-nums"><span class="mcard-actual">' + r.a + '</span><span class="mcard-tgt">of ' + wholeTarget(r.t) + ' target</span></div>' +
+      '<div style="position:relative;margin-bottom:8px">' +
+        '<div class="pbb"><div class="pbf ' + fc + '" style="width:' + actualW + '%"></div></div>' +
+        (isMTD ? '<div style="position:relative;height:8px;margin-top:-1px"><div style="position:absolute;left:' + paceW + '%;top:0;width:2.5px;height:8px;background:#444;border-radius:2px"></div></div>' : '') +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+        '<span class="mcard-status ' + stCls + '">' + vsPaceStr(r.a,r.t,pace) + '</span>' +
+        '<span style="font-size:12px;color:#888780">' + (r.t > 0 ? r.pctToTarget : 0) + '% to ' + (isMTD ? 'paced target' : 'goal') + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('mtbl').innerHTML = ranked.map(function(r,i){
+    var ps = paceStatus(r.a,r.t,pace);
+    var pv = r.t > 0 ? r.a - pacedTarget(r.t,pace) : null;
+
+    return '<tr class="dr ' + ps.row + '">' +
+      '<td style="font-size:12px;color:#888780;font-weight:500">' + (i+1) + '</td>' +
+      '<td style="font-weight:500">' + r.m + '</td>' +
+      '<td style="color:#888780;font-size:12px">' + marketManagerLabel(r.m) + '</td>' +
+      '<td class="tr">' + r.areas + '</td>' +
+      '<td class="tr">' + r.cnt + '</td>' +
+      '<td class="tr">' + wholeTarget(r.t) + '</td>' +
+      '<td class="tr">' + r.a + '</td>' +
+      '<td class="tr" style="font-weight:500">' + r.avgS.toFixed(1) + '</td>' +
+      '<td class="tr ' + ps.cls + '" style="font-size:12px">' + (pv !== null ? vsPaceStr(r.a,r.t,pace) : '—') + '</td>' +
+      '<td class="tr"><span class="b ' + ps.badge + '">' + displayPctBadge(r.pctToTarget,r.t > 0) + '</span></td>' +
+    '</tr>';
+  }).join('');
+
+  buildSM();
+
+  refreshCollapsible('sb-ov-scores');
+  refreshCollapsible('sb-ov-ldr');
+  refreshCollapsible('sb-ov-tbl');
+
+  setTimeout(function(){
+    refreshCollapsible('sb-ov-charts');
+  },100);
 }
-function buildCmp(){
-  var mk=(document.getElementById('cmp-sel')||{}).value||selMonthKey, meta=getMeta(mk), overviewMarkets=getOverviewMarkets(); if(!meta)return;
-  var actuals=overviewMarkets.map(function(m){return marketOverviewActuals(mk,m)}), targets=overviewMarkets.map(function(m){return monthlyTarget(mk,m)});
-  document.getElementById('cmp-foot').textContent=meta.isMTD?meta.label+' MTD — '+meta.daysElapsed+' of '+meta.daysTotal+' days.':'Complete month — final actuals vs target.';
-  if(cmpChart)cmpChart.destroy(); var ctx=document.getElementById('cmpChart'); if(!ctx)return;
-  cmpChart=new Chart(ctx,{type:'bar',data:{labels:overviewMarkets,datasets:[{label:'Actual',data:actuals,backgroundColor:overviewMarkets.map(function(m){return meta.isMTD?safeColor(m)+'88':safeColor(m)}),borderRadius:8,order:2},{label:'Target',data:targets,type:'line',borderColor:'#888780',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0,order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label==='Target'?'Target: '+ctx.parsed.y:(meta.isMTD?'MTD: ':'Actual: ')+actuals[ctx.dataIndex]},title:function(ctx){return ctx[0].label+' — '+meta.label}}}},scales:{x:{grid:{display:false},ticks:{font:{size:12},color:'#5F5E5A'}},y:{grid:{color:'#F1EFE8'},ticks:{font:{size:11},color:'#888780'},suggestedMax:Math.max.apply(null,targets.concat(actuals).concat([1]))*1.2,title:{display:true,text:'Total referrals',font:{size:11},color:'#888780'}}}}});
+
+function setCV(v) {
+  document.querySelectorAll('.tgbtn').forEach(function(b,i){
+    b.classList.toggle('on',(i === 0 && v === 'sm') || (i === 1 && v === 'cmp'));
+  });
+
+  document.getElementById('cv-sm').classList.toggle('on',v === 'sm');
+  document.getElementById('cv-cmp').classList.toggle('on',v === 'cmp');
+
+  if (v === 'sm') buildSM();
+  else buildCmp();
 }
-function sw(t){ var keys=['st','am','ov']; document.querySelectorAll('.tabs__btn').forEach(function(el,i){el.classList.toggle('is-active',keys[i]===t)}); keys.forEach(function(k){var pg=document.getElementById('pg-'+k); if(pg)pg.classList.toggle('on',k===t)}); if(t==='am'){var amSel=document.getElementById('am-mkt-sel'); if(amSel&&amSel.value!==selMarketKey)amSel.value=selMarketKey; renderAM(selMarketKey);} if(t==='st'){var stSel=document.getElementById('mkt-sel'); if(stSel&&stSel.value!==selMarketKey){stSel.value=selMarketKey; filterMkt(selMarketKey);}else renderS();} if(t==='ov')buildOv(); }
-function applyLoadedState(source){
-  buildDerived(); buildAllDDs(); updateDynamicHeaders(CURRENT_MONTH_KEY); selectMonth(CURRENT_MONTH_KEY);
-  document.getElementById('markets-sub').textContent=MKTS.join(' · ') || 'No markets available';
-  var latestReferralDay=RAW.map(function(r){return r.day}).sort().pop()||'', latestBizDay=BIZ_RAW.filter(function(r){return isReferralChannel(r.channel)}).map(function(r){return r.day}).sort().pop()||'', latestDay=[latestReferralDay,latestBizDay].filter(Boolean).sort().pop()||'';
-  document.getElementById('ulbl').textContent=latestDay?'Data through '+latestDay:'Data loaded';
-  var pill=document.getElementById('status-pill'), text=document.getElementById('ds-pill');
-  if(source==='live'){text.textContent='Live data'; pill.className='status-pill';}else{text.textContent='Fallback data'; pill.className='status-pill status-pill--warning';}
-  filterMkt('all'); document.getElementById('loading-overlay').style.display='none';
-  [['sh-st-scores','sb-st-scores',true],['sh-st-tbl','sb-st-tbl',true],['sh-am-scores','sb-am-scores',true],['sh-am-ldr','sb-am-ldr',true],['sh-am-tbl','sb-am-tbl',true],['sh-ov-scores','sb-ov-scores',true],['sh-ov-ldr','sb-ov-ldr',true],['sh-ov-tbl','sb-ov-tbl',true],['sh-ov-charts','sb-ov-charts',true]].forEach(function(cfg){initCollapsible(cfg[0],cfg[1],cfg[2])});
+
+function buildSM() {
+  var mk = selMonthKey;
+  var meta = getMeta(mk);
+  var isMTD = meta && meta.isMTD;
+  var pace = paceFraction(mk);
+  var overviewMarkets = getOverviewMarkets();
+  var grid = document.getElementById('sm-grid');
+
+  if (!grid) return;
+
+  grid.innerHTML = overviewMarkets.map(function(m){
+    var id = m.replace(/[^a-zA-Z0-9_-]/g,'_');
+
+    return '<div class="sm-card">' +
+      '<div class="sm-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">' +
+        '<span style="font-size:12px;font-weight:700;color:' + safeColor(m) + '">' + m + '</span>' +
+        '<span id="sm-stat-' + id + '"></span>' +
+      '</div>' +
+      '<div style="position:relative;height:150px"><canvas id="sm-' + id + '"></canvas></div>' +
+    '</div>';
+  }).join('');
+
+  overviewMarkets.forEach(function(m){
+    var id = m.replace(/[^a-zA-Z0-9_-]/g,'_');
+    var actualMonths = MONTHS_META.slice(-6);
+    var labels = actualMonths.map(function(mm){ return mm.label.substring(0,3); });
+    var actuals = actualMonths.map(function(mm){ return marketOverviewActuals(mm.key,m); });
+    var targets = actualMonths.map(function(mm){ return wholeTarget(monthlyTarget(mm.key,m)); });
+    var idx = actualMonths.findIndex(function(mm){ return mm.key === mk; });
+
+    var bp = (idx >= 0 && targets[idx] > 0)
+      ? (isMTD
+          ? pc(marketOverviewActuals(mk,m), pacedTarget(monthlyTarget(mk,m), pace))
+          : pc(marketOverviewActuals(mk,m), monthlyTarget(mk,m)))
+      : 0;
+
+    var bb = bp >= 100 ? '#1d9e75' : bp >= 80 ? '#ba7517' : '#a32d2d';
+
+    var statEl = document.getElementById('sm-stat-' + id);
+
+    if (statEl) {
+      statEl.innerHTML = '<span style="font-weight:700;border-radius:20px;padding:2px 8px;font-size:11px;background:' + bb + ';color:#fff">' + bp + '%' + (isMTD ? ' of pace' : '') + '</span>';
+    }
+
+    var bgs = actualMonths.map(function(mm){
+      return mm.isMTD ? safeColor(m) + '55' : safeColor(m);
+    });
+
+    if (smCharts[m]) smCharts[m].destroy();
+
+    var ctx = document.getElementById('sm-' + id);
+    if (!ctx) return;
+
+    smCharts[m] = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:labels,
+        datasets:[
+          {
+            label:'Actual',
+            data:actuals,
+            backgroundColor:bgs,
+            borderRadius:6,
+            order:2
+          },
+          {
+            label:'Target',
+            data:targets,
+            type:'line',
+            borderColor:safeColor(m),
+            borderWidth:1.5,
+            borderDash:[5,4],
+            pointRadius:3,
+            pointBackgroundColor:'#fff',
+            pointBorderColor:safeColor(m),
+            pointBorderWidth:2,
+            fill:false,
+            tension:0,
+            order:1
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            callbacks:{
+              label:function(ctx){
+                return ctx.dataset.label === 'Target'
+                  ? 'Target: ' + ctx.parsed.y
+                  : 'Actual: ' + ctx.parsed.y + (actualMonths[ctx.dataIndex].isMTD ? ' (MTD)' : '');
+              },
+              title:function(ctx){
+                return m + ' — ' + actualMonths[ctx[0].dataIndex].label;
+              }
+            }
+          }
+        },
+        scales:{
+          x:{
+            grid:{display:false},
+            ticks:{font:{size:10},color:'#888780'}
+          },
+          y:{
+            grid:{color:'#F1EFE8'},
+            ticks:{font:{size:10},color:'#888780'},
+            suggestedMax:Math.max.apply(null,targets.concat(actuals).concat([1])) * 1.15
+          }
+        }
+      }
+    });
+  });
 }
-function loadData(){
-  document.getElementById('loading-text').textContent='Fetching live data…';
+
+function buildCmp() {
+  var mk = (document.getElementById('cmp-sel') || {}).value || selMonthKey;
+  var meta = getMeta(mk);
+  var overviewMarkets = getOverviewMarkets();
+
+  if (!meta) return;
+
+  var actuals = overviewMarkets.map(function(m){
+    return marketOverviewActuals(mk,m);
+  });
+
+  var targets = overviewMarkets.map(function(m){
+    return wholeTarget(monthlyTarget(mk,m));
+  });
+
+  document.getElementById('cmp-foot').textContent = meta.isMTD
+    ? meta.label + ' MTD — ' + meta.daysElapsed + ' of ' + meta.daysTotal + ' days.'
+    : 'Complete month — final actuals vs target.';
+
+  if (cmpChart) cmpChart.destroy();
+
+  var ctx = document.getElementById('cmpChart');
+  if (!ctx) return;
+
+  cmpChart = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:overviewMarkets,
+      datasets:[
+        {
+          label:'Actual',
+          data:actuals,
+          backgroundColor:overviewMarkets.map(function(m){
+            return meta.isMTD ? safeColor(m) + '88' : safeColor(m);
+          }),
+          borderRadius:8,
+          order:2
+        },
+        {
+          label:'Target',
+          data:targets,
+          type:'line',
+          borderColor:'#888780',
+          borderWidth:1.5,
+          borderDash:[5,4],
+          pointRadius:0,
+          fill:false,
+          tension:0,
+          order:1
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(ctx){
+              return ctx.dataset.label === 'Target'
+                ? 'Target: ' + ctx.parsed.y
+                : (meta.isMTD ? 'MTD: ' : 'Actual: ') + actuals[ctx.dataIndex];
+            },
+            title:function(ctx){
+              return ctx[0].label + ' — ' + meta.label;
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{display:false},
+          ticks:{font:{size:12},color:'#5F5E5A'}
+        },
+        y:{
+          grid:{color:'#F1EFE8'},
+          ticks:{font:{size:11},color:'#888780'},
+          suggestedMax:Math.max.apply(null,targets.concat(actuals).concat([1])) * 1.2,
+          title:{
+            display:true,
+            text:'Total referrals',
+            font:{size:11},
+            color:'#888780'
+          }
+        }
+      }
+    }
+  });
+}
+
+function sw(t) {
+  var keys = ['st','am','ov'];
+
+  document.querySelectorAll('.tabs__btn').forEach(function(el,i){
+    el.classList.toggle('is-active',keys[i] === t);
+  });
+
+  keys.forEach(function(k){
+    var pg = document.getElementById('pg-' + k);
+    if (pg) pg.classList.toggle('on',k === t);
+  });
+
+  if (t === 'am') {
+    var amSel = document.getElementById('am-mkt-sel');
+    if (amSel && amSel.value !== selMarketKey) amSel.value = selMarketKey;
+    renderAM(selMarketKey);
+  }
+
+  if (t === 'st') {
+    var stSel = document.getElementById('mkt-sel');
+
+    if (stSel && stSel.value !== selMarketKey) {
+      stSel.value = selMarketKey;
+      filterMkt(selMarketKey);
+    } else {
+      renderS();
+    }
+  }
+
+  if (t === 'ov') buildOv();
+}
+
+function applyLoadedState(source) {
+  buildDerived();
+  buildAllDDs();
+  updateDynamicHeaders(CURRENT_MONTH_KEY);
+  selectMonth(CURRENT_MONTH_KEY);
+
+  document.getElementById('markets-sub').textContent = MKTS.join(' · ') || 'No markets available';
+
+  var latestReferralDay = RAW.map(function(r){ return r.day; }).sort().pop() || '';
+
+  var latestBizDay = BIZ_RAW.filter(function(r){
+    return isReferralChannel(r.channel);
+  }).map(function(r){ return r.day; }).sort().pop() || '';
+
+  var latestDay = [latestReferralDay,latestBizDay].filter(Boolean).sort().pop() || '';
+
+  document.getElementById('ulbl').textContent = latestDay ? 'Data through ' + latestDay : 'Data loaded';
+
+  var pill = document.getElementById('status-pill');
+  var text = document.getElementById('ds-pill');
+
+  if (source === 'live') {
+    text.textContent = 'Live data';
+    pill.className = 'status-pill';
+  } else {
+    text.textContent = 'Fallback data';
+    pill.className = 'status-pill status-pill--warning';
+  }
+
+  filterMkt('all');
+
+  document.getElementById('loading-overlay').style.display = 'none';
+
+  [
+    ['sh-st-scores','sb-st-scores',true],
+    ['sh-st-tbl','sb-st-tbl',true],
+    ['sh-am-scores','sb-am-scores',true],
+    ['sh-am-ldr','sb-am-ldr',true],
+    ['sh-am-tbl','sb-am-tbl',true],
+    ['sh-ov-scores','sb-ov-scores',true],
+    ['sh-ov-ldr','sb-ov-ldr',true],
+    ['sh-ov-tbl','sb-ov-tbl',true],
+    ['sh-ov-charts','sb-ov-charts',true]
+  ].forEach(function(cfg){
+    initCollapsible(cfg[0],cfg[1],cfg[2]);
+  });
+}
+
+function loadData() {
+  document.getElementById('loading-text').textContent = 'Fetching live data…';
+
   Promise.allSettled([
-    fetch(LIVE_URL).then(function(res){if(!res.ok)throw new Error('Referral dashboard HTTP '+res.status); return res.json();}),
-    fetch(BIZ_LIVE_URL).then(function(res){if(!res.ok)throw new Error('KPI actuals HTTP '+res.status); return res.json();})
+    fetch(LIVE_URL).then(function(res){
+      if (!res.ok) throw new Error('Referral dashboard HTTP ' + res.status);
+      return res.json();
+    }),
+    fetch(BIZ_LIVE_URL).then(function(res){
+      if (!res.ok) throw new Error('KPI actuals HTTP ' + res.status);
+      return res.json();
+    })
   ]).then(function(results){
-    var referralResult=results[0], bizResult=results[1];
-    if(referralResult.status!=='fulfilled')throw new Error('Referral file failed: '+referralResult.reason.message);
-    var referralJson=Array.isArray(referralResult.value)?referralResult.value:[], bizJson=bizResult.status==='fulfilled'&&Array.isArray(bizResult.value)?bizResult.value:[];
-    document.getElementById('loading-text').textContent='Processing '+referralJson.length+' referral rows and '+bizJson.length+' KPI rows…';
-    var referralRows=referralJson.map(normaliseRow).filter(Boolean), bizRows=bizJson.map(normaliseBizRow).filter(Boolean);
+    var referralResult = results[0];
+    var bizResult = results[1];
+
+    if (referralResult.status !== 'fulfilled') {
+      throw new Error('Referral file failed: ' + referralResult.reason.message);
+    }
+
+    var referralJson = Array.isArray(referralResult.value) ? referralResult.value : [];
+    var bizJson = bizResult.status === 'fulfilled' && Array.isArray(bizResult.value) ? bizResult.value : [];
+
+    document.getElementById('loading-text').textContent =
+      'Processing ' + referralJson.length + ' referral rows and ' + bizJson.length + ' KPI rows…';
+
+    var referralRows = referralJson.map(normaliseRow).filter(Boolean);
+    var bizRows = bizJson.map(normaliseBizRow).filter(Boolean);
+
     console.log('Referral raw sample:', referralJson[0]);
     console.log('Referral usable rows:', referralRows.length);
     console.log('KPI usable rows:', bizRows.length);
-    if(!referralRows.length){ throw new Error('No usable referral rows. First row keys: '+Object.keys(referralJson[0]||{}).join(', ')); }
-    RAW=referralRows; BIZ_RAW=bizRows; dataSource='live'; bizDataSource=bizRows.length?'live':'fallback'; applyLoadedState('live');
+
+    if (!referralRows.length) {
+      throw new Error('No usable referral rows. First row keys: ' + Object.keys(referralJson[0] || {}).join(', '));
+    }
+
+    RAW = referralRows;
+    BIZ_RAW = bizRows;
+    dataSource = 'live';
+    bizDataSource = bizRows.length ? 'live' : 'fallback';
+
+    applyLoadedState('live');
   }).catch(function(err){
     console.warn('Live data fetch failed, using fallback:', err.message);
-    document.getElementById('loading-text').textContent='Using fallback data…';
-    RAW=FALLBACK_DATA.map(normaliseFallbackRow).filter(Boolean); BIZ_RAW=[]; dataSource='fallback'; bizDataSource='fallback'; applyLoadedState('fallback');
+
+    document.getElementById('loading-text').textContent = 'Using fallback data…';
+
+    RAW = FALLBACK_DATA.map(normaliseFallbackRow).filter(Boolean);
+    BIZ_RAW = [];
+    dataSource = 'fallback';
+    bizDataSource = 'fallback';
+
+    applyLoadedState('fallback');
   });
 }
-function initCollapsible(headerId,bodyId,defaultOpen){ var hdr=document.getElementById(headerId), body=document.getElementById(bodyId); if(!hdr||!body||hdr.dataset.bound==='1')return; hdr.dataset.bound='1'; var toggle=hdr.querySelector('.section-toggle'), open=defaultOpen!==false; if(open){body.style.maxHeight='none';body.classList.remove('collapsed')}else{body.style.maxHeight='0';body.classList.add('collapsed')} if(toggle)toggle.className='section-toggle '+(open?'open':'closed'); hdr.addEventListener('click',function(){ open=!open; if(open){body.classList.remove('collapsed');body.style.maxHeight=body.scrollHeight+'px';setTimeout(function(){if(open)body.style.maxHeight='none'},260)}else{body.style.maxHeight=body.scrollHeight+'px';requestAnimationFrame(function(){requestAnimationFrame(function(){body.style.maxHeight='0';body.classList.add('collapsed')})})} if(toggle)toggle.className='section-toggle '+(open?'open':'closed'); }); }
-function refreshCollapsible(bodyId){ var body=document.getElementById(bodyId); if(!body||body.classList.contains('collapsed'))return; body.style.maxHeight='none'; }
-function setStoreMode(mode){ storeViewMode=mode; var fleetBtn=document.getElementById('mode-fleet-btn'), myBtn=document.getElementById('mode-mystore-btn'), fleetF=document.getElementById('fleet-filters'), myF=document.getElementById('mystore-filters'); if(mode==='fleet'){fleetBtn.className='mode-btn active';myBtn.className='mode-btn';fleetF.style.display='';myF.style.display='none';var mySel=document.getElementById('my-store-sel'); if(mySel)mySel.value='';}else{fleetBtn.className='mode-btn';myBtn.className='mode-btn active my-store-active';fleetF.style.display='none';myF.style.display='';var mktSel=document.getElementById('mkt-sel'), amSel=document.getElementById('am-sel'); if(mktSel){mktSel.value='all';selMarketKey='all'} if(amSel)amSel.value='all';} renderS(); }
+
+function initCollapsible(headerId,bodyId,defaultOpen) {
+  var hdr = document.getElementById(headerId);
+  var body = document.getElementById(bodyId);
+
+  if (!hdr || !body || hdr.dataset.bound === '1') return;
+
+  hdr.dataset.bound = '1';
+
+  var toggle = hdr.querySelector('.section-toggle');
+  var open = defaultOpen !== false;
+
+  if (open) {
+    body.style.maxHeight = 'none';
+    body.classList.remove('collapsed');
+  } else {
+    body.style.maxHeight = '0';
+    body.classList.add('collapsed');
+  }
+
+  if (toggle) toggle.className = 'section-toggle ' + (open ? 'open' : 'closed');
+
+  hdr.addEventListener('click',function(){
+    open = !open;
+
+    if (open) {
+      body.classList.remove('collapsed');
+      body.style.maxHeight = body.scrollHeight + 'px';
+
+      setTimeout(function(){
+        if (open) body.style.maxHeight = 'none';
+      },260);
+    } else {
+      body.style.maxHeight = body.scrollHeight + 'px';
+
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          body.style.maxHeight = '0';
+          body.classList.add('collapsed');
+        });
+      });
+    }
+
+    if (toggle) toggle.className = 'section-toggle ' + (open ? 'open' : 'closed');
+  });
+}
+
+function refreshCollapsible(bodyId) {
+  var body = document.getElementById(bodyId);
+
+  if (!body || body.classList.contains('collapsed')) return;
+
+  body.style.maxHeight = 'none';
+}
+
+function setStoreMode(mode) {
+  storeViewMode = mode;
+
+  var fleetBtn = document.getElementById('mode-fleet-btn');
+  var myBtn = document.getElementById('mode-mystore-btn');
+  var fleetF = document.getElementById('fleet-filters');
+  var myF = document.getElementById('mystore-filters');
+
+  if (mode === 'fleet') {
+    fleetBtn.className = 'mode-btn active';
+    myBtn.className = 'mode-btn';
+    fleetF.style.display = '';
+    myF.style.display = 'none';
+
+    var mySel = document.getElementById('my-store-sel');
+    if (mySel) mySel.value = '';
+  } else {
+    fleetBtn.className = 'mode-btn';
+    myBtn.className = 'mode-btn active my-store-active';
+    fleetF.style.display = 'none';
+    myF.style.display = '';
+
+    var mktSel = document.getElementById('mkt-sel');
+    var amSel = document.getElementById('am-sel');
+
+    if (mktSel) {
+      mktSel.value = 'all';
+      selMarketKey = 'all';
+    }
+
+    if (amSel) amSel.value = 'all';
+  }
+
+  renderS();
+}
+
 loadData();
 </script>
 </body>
